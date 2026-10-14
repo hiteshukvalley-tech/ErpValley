@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "rootDir": "src",
+    "outDir": "dist",
+    "sourceMap": true
+  },
+  "include": ["src"],
+  // Seeding runs from TypeScript with tsx and reads the client source, so it is not part of the build.
+  "exclude": ["src/scripts"]
+}

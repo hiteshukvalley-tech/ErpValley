@@ -1,0 +1,25 @@
+import { useEffect, useRef, useState } from 'react'
+
+/** True once the element has scrolled into view. Falls back to visible where IntersectionObserver is missing. */
+export function useInView<T extends Element>(rootMargin = '0px 0px -10% 0px') {
+  const ref = useRef<T>(null)
+  const [inView, setInView] = useState(() => typeof IntersectionObserver === 'undefined')
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el || inView) return
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true)
+          io.disconnect()
+        }
+      },
+      { rootMargin },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [inView, rootMargin])
+
+  return { ref, inView }
+}
