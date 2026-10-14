@@ -1,12 +1,12 @@
 import { ArrowRight, Search, SearchX } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useLoaderData, useSearchParams } from 'react-router-dom'
 import { Container } from '@/components/ui/Container'
 import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Section } from '@/components/ui/Section'
 import { usePageMeta } from '@/hooks/usePageMeta'
-import { search, type SearchGroup } from '@/services/searchIndex'
+import type { SearchGroup, searchLoader } from '@/services/search'
 
 const groups: SearchGroup[] = ['Products', 'Industries', 'Services', 'Articles', 'Pages']
 const suggestions = ['inventory', 'payroll', 'data migration', 'manufacturing', 'approval workflow']
@@ -15,7 +15,7 @@ export function SearchPage() {
   const [params, setParams] = useSearchParams()
   const query = params.get('q')?.trim() ?? ''
   const [draft, setDraft] = useState(query)
-  const results = search(query)
+  const { results } = useLoaderData<typeof searchLoader>()
   usePageMeta(query ? `Search: ${query}` : 'Search', 'Search ERPVALLEY products, industries, services and articles.')
 
   // Keep the input in sync when the URL query changes (e.g. back/forward navigation).

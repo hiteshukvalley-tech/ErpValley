@@ -1,20 +1,29 @@
 import { Link } from 'react-router-dom'
+import logo from '@/assets/brand/erpvalley-logo.png'
+import logoOnDark from '@/assets/brand/erpvalley-logo-on-dark.png'
 import { cn } from '@/utils/cn'
 
-/**
- * TEMPORARY wordmark.
- * Replace with the official ERPVALLEY logo file once provided:
- *   1. Put the file in src/assets/brand/ (SVG preferred).
- *   2. Swap the <span> below for <img src={logo} alt="ERPVALLEY" />.
- * Every header, footer and auth page uses this component, so this is the only change needed.
+/*
+ * Official ERPVALLEY logo. Every header, footer and menu uses this component.
+ * Files in src/assets/brand/:
+ *   erpvalley-logo-original.png  the logo as supplied (master copy, not shipped)
+ *   erpvalley-logo.png           cropped, transparent background, for light backgrounds
+ *   erpvalley-logo-on-dark.png   same, with "ALLEY" in white, for dark backgrounds and dark mode
  */
+
+const size = { width: 690, height: 96 }
+
 export function Logo({ className, onDark }: { className?: string; onDark?: boolean }) {
   return (
-    <Link to="/" aria-label="ERPVALLEY home" className={cn('inline-flex items-center', className)}>
-      <span className="font-display text-xl font-extrabold tracking-tight">
-        <span className={onDark ? 'text-white' : 'text-fg'}>ERP</span>
-        <span className="text-logo-blue">VALLEY</span>
-      </span>
+    <Link to="/" aria-label="ERPVALLEY home" className={cn('inline-flex shrink-0 items-center', className)}>
+      {onDark ? (
+        <img src={logoOnDark} alt="" {...size} className="h-7 w-auto" />
+      ) : (
+        <>
+          <img src={logo} alt="" {...size} className="h-7 w-auto dark:hidden" />
+          <img src={logoOnDark} alt="" {...size} className="hidden h-7 w-auto dark:block" />
+        </>
+      )}
     </Link>
   )
 }

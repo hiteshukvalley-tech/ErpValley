@@ -5,11 +5,14 @@ import { describe, expect, it } from 'vitest'
 import { ThemeProvider } from '@/components/common/ThemeProvider'
 import * as company from '@/content/company'
 import { cookiePolicy, privacyPolicy, termsOfService } from '@/content/legal'
+import { industries } from '@/content/industries'
 import { posts } from '@/content/posts'
+import { products } from '@/content/products'
+import { services } from '@/content/services'
 import type { CaseStudyContent } from '@/content/types'
 import { CaseStudyView } from '@/pages/company/CaseStudyDetailPage'
 import { search } from '@/services/searchIndex'
-import { brokenLinksOnPage, renderAt } from './utils'
+import { brokenLinksOnPage, renderAt, settled } from './utils'
 
 const staticPages: [path: string, h1: RegExp][] = [
   ['/about', /connected system/i],
@@ -89,7 +92,7 @@ describe('company, resource and legal pages', () => {
     render(
       <ThemeProvider>
         <MemoryRouter>
-          <CaseStudyView study={fixture} related={[fixture]} />
+          <CaseStudyView study={fixture} related={[fixture]} content={{ industries, products, services }} />
         </MemoryRouter>
       </ThemeProvider>,
     )
@@ -103,8 +106,9 @@ describe('company, resource and legal pages', () => {
 describe('blog', () => {
   it('filters articles by category', async () => {
     const user = userEvent.setup()
-    await renderAt('/blog')
+    const router = await renderAt('/blog')
     await user.click(screen.getByRole('button', { name: 'Finance' }))
+    await settled(router)
     expect(screen.getByRole('button', { name: 'Finance' })).toHaveAttribute('aria-pressed', 'true')
     const titles = screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)
     const expected = posts.filter((p) => p.category === 'Finance').map((p) => p.title)
@@ -125,8 +129,9 @@ describe('search', () => {
     const router = await renderAt('/search')
     await user.type(screen.getByRole('searchbox', { name: 'Search the site' }), 'payroll')
     await user.click(screen.getByRole('button', { name: 'Search' }))
+    await settled(router)
     expect(router.state.location.search).toBe('?q=payroll')
-    expect(screen.getByRole('status')).toHaveTextContent(/results? for “payroll”/)
+    expect(await screen.findByRole('status')).toHaveTextContent(/results? for “payroll”/)
     expect(screen.getAllByRole('link', { name: /HR & Payroll/ }).length).toBeGreaterThan(0)
   })
 

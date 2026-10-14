@@ -8,11 +8,11 @@ import { Button } from '@/components/ui/Button'
 import { Container } from '@/components/ui/Container'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Section, SectionHeader } from '@/components/ui/Section'
-import { postBySlug, posts, readingMinutes } from '@/content/posts'
-import { productBySlug } from '@/content/products'
+import { readingMinutes } from '@/content/readingTime'
 import type { PostCategory, PostContent } from '@/content/types'
 import { usePageMeta } from '@/hooks/usePageMeta'
 import { NotFoundPage } from '@/pages/NotFoundPage'
+import { bySlug, useContent } from '@/services/content'
 import { cn } from '@/utils/cn'
 
 const formatDate = (iso: string) =>
@@ -48,9 +48,10 @@ function PostCard({ post, featured }: { post: PostContent; featured?: boolean })
 
 export function BlogPage() {
   usePageMeta('Blog', 'ERP insights from ERPVALLEY: practical articles on choosing, implementing and running ERP across finance, operations and technology.')
+  const { posts } = useContent<'posts'>()
   const [params, setParams] = useSearchParams()
   const active = params.get('category') as PostCategory | null
-  const list = useMemo(() => (active ? posts.filter((p) => p.category === active) : posts), [active])
+  const list = useMemo(() => (active ? posts.filter((p) => p.category === active) : posts), [active, posts])
   const [featured, ...rest] = list
 
   return (
@@ -95,6 +96,7 @@ export function BlogPage() {
 
 export function GuidesPage() {
   usePageMeta('ERP Guides', 'Step-by-step ERP guides from ERPVALLEY: choosing an ERP system, planning an implementation and migrating your data safely.')
+  const { posts } = useContent<'posts'>()
   const guides = posts.filter((p) => p.kind === 'guide')
   return (
     <>
@@ -123,6 +125,7 @@ function ResourceHub({ eyebrow, title, description, icon, emptyTitle, emptyText 
   emptyText: string
 }) {
   usePageMeta(title, description)
+  const { posts } = useContent<'posts'>()
   return (
     <>
       <PageHero eyebrow={eyebrow} title={title} description={description} />
@@ -186,12 +189,15 @@ export const WebinarsPage = () => (
 
 export function BlogPostPage() {
   const { slug = '' } = useParams()
-  const post = postBySlug.get(slug)
+  const post = bySlug(useContent<'posts'>().posts).get(slug)
   return post ? <PostView key={post.slug} post={post} /> : <NotFoundPage />
 }
 
 function PostView({ post }: { post: PostContent }) {
   usePageMeta(post.title, post.metaDescription)
+  const content = useContent<'posts' | 'products'>()
+  const { posts } = content
+  const productBySlug = bySlug(content.products)
   const related = posts.filter((p) => p.slug !== post.slug && p.category === post.category).concat(posts.filter((p) => p.slug !== post.slug && p.category !== post.category)).slice(0, 3)
   const products = post.relatedProducts.flatMap((s) => productBySlug.get(s) ?? [])
 

@@ -6,9 +6,9 @@ import { PageHero } from '@/components/common/PageHero'
 import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Section, SectionHeader } from '@/components/ui/Section'
-import { services } from '@/content/services'
 import type { IconItem } from '@/content/types'
 import { usePageMeta } from '@/hooks/usePageMeta'
+import { useContent } from '@/services/content'
 
 /* Team, Leadership and Portfolio. Profiles and projects are shown only once real details are provided. */
 
@@ -79,6 +79,7 @@ export function LeadershipPage() {
 }
 
 export function PortfolioPage() {
+  const { services } = useContent<'services'>()
   usePageMeta('Portfolio', 'The ERPVALLEY portfolio: ERP implementations, custom development, integrations and modernization work across industries.')
   return (
     <>

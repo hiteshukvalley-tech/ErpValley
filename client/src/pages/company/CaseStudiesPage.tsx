@@ -6,12 +6,13 @@ import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Reveal } from '@/components/ui/Reveal'
 import { Section, SectionHeader } from '@/components/ui/Section'
-import { caseStudies } from '@/content/caseStudies'
 import { engagementTypes } from '@/content/home'
-import { industryBySlug } from '@/content/industries'
 import { usePageMeta } from '@/hooks/usePageMeta'
+import { bySlug, useContent } from '@/services/content'
 
 export function CaseStudiesPage() {
+  const { caseStudies, industries } = useContent<'caseStudies' | 'industries'>()
+  const industryBySlug = bySlug(industries)
   usePageMeta(
     'Case Studies',
     'ERPVALLEY case studies: how ERP implementation, modernization and custom development projects are delivered. Only client-verified outcomes are published.',

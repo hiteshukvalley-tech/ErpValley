@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { ThemeProvider } from '@/components/common/ThemeProvider'
 import { pageRegistry } from '@/config/navigation'
@@ -23,6 +23,8 @@ export async function settled(router: { state: { initialized: boolean; navigatio
   await waitFor(() => {
     if (!router.state.initialized || router.state.navigation.state !== 'idle') throw new Error('router busy')
   })
+  // Route data arrives asynchronously, so React renders the new page in a transition; flush it and its effects.
+  await act(() => new Promise((resolve) => setTimeout(resolve, 0)))
   await screen.findByRole('main')
 }
 

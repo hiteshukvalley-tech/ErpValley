@@ -5,9 +5,9 @@ import { PageHero } from '@/components/common/PageHero'
 import { Button } from '@/components/ui/Button'
 import { Reveal } from '@/components/ui/Reveal'
 import { Section, SectionHeader } from '@/components/ui/Section'
-import { products, productBySlug } from '@/content/products'
 import type { ProductCategory, ProductSlug } from '@/content/types'
 import { usePageMeta } from '@/hooks/usePageMeta'
+import { bySlug, useContent } from '@/services/content'
 
 const categories: ProductCategory[] = [
   'Platform',
@@ -22,6 +22,8 @@ const categories: ProductCategory[] = [
 const flow: ProductSlug[] = ['crm', 'sales-management', 'inventory-management', 'finance-accounting', 'reporting-analytics']
 
 export function ProductsOverviewPage() {
+  const { products } = useContent<'products'>()
+  const productBySlug = bySlug(products)
   usePageMeta(
     'ERP Products and Modules',
     'Explore ERPVALLEY modules for finance, CRM, sales, inventory, procurement, manufacturing, HR, projects, reporting and automation, all on one connected platform.',

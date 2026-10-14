@@ -3,10 +3,13 @@ import { PublicLayout } from '@/layouts/PublicLayout'
 import { HomePage } from '@/pages/HomePage'
 import { RegistryPage } from '@/pages/RegistryPage'
 import { ServerErrorPage } from '@/pages/ServerErrorPage'
+import { contentLoader } from '@/services/content'
+import { searchLoader } from '@/services/search'
 
 /*
  * The homepage, layout and error pages ship in the main bundle. Every other page is loaded on demand,
  * so the large content files (products, industries, services, posts) are only downloaded when needed.
+ * Content pages get their data from route loaders: the API when it is reachable, otherwise the bundled content.
  */
 
 /** Builds a route `lazy` loader that picks one page component from a module. */
@@ -39,13 +42,13 @@ export const routes: RouteObject[] = [
     children: [
       { index: true, element: <HomePage /> },
       { path: '500', element: <ServerErrorPage /> },
-      { path: 'products', lazy: lazyPage(products, (m) => m.ProductsOverviewPage) },
-      { path: 'products/compare', lazy: lazyPage(productCompare, (m) => m.ProductComparePage) },
-      { path: 'products/:slug', lazy: lazyPage(productDetail, (m) => m.ProductDetailPage) },
-      { path: 'industries', lazy: lazyPage(industries, (m) => m.IndustriesPage) },
-      { path: 'industries/:slug', lazy: lazyPage(industryDetail, (m) => m.IndustryDetailPage) },
-      { path: 'services', lazy: lazyPage(services, (m) => m.ServicesPage) },
-      { path: 'services/:slug', lazy: lazyPage(serviceDetail, (m) => m.ServiceDetailPage) },
+      { path: 'products', loader: contentLoader('products'), lazy: lazyPage(products, (m) => m.ProductsOverviewPage) },
+      { path: 'products/compare', loader: contentLoader('products'), lazy: lazyPage(productCompare, (m) => m.ProductComparePage) },
+      { path: 'products/:slug', loader: contentLoader('products'), lazy: lazyPage(productDetail, (m) => m.ProductDetailPage) },
+      { path: 'industries', loader: contentLoader('industries'), lazy: lazyPage(industries, (m) => m.IndustriesPage) },
+      { path: 'industries/:slug', loader: contentLoader('industries', 'products'), lazy: lazyPage(industryDetail, (m) => m.IndustryDetailPage) },
+      { path: 'services', loader: contentLoader('services'), lazy: lazyPage(services, (m) => m.ServicesPage) },
+      { path: 'services/:slug', loader: contentLoader('services', 'products'), lazy: lazyPage(serviceDetail, (m) => m.ServiceDetailPage) },
       { path: 'about', lazy: lazyPage(company, (m) => m.AboutPage) },
       { path: 'process', lazy: lazyPage(company, (m) => m.ProcessPage) },
       { path: 'technology', lazy: lazyPage(company, (m) => m.TechnologyPage) },
@@ -55,20 +58,20 @@ export const routes: RouteObject[] = [
       { path: 'engagement-models', lazy: lazyPage(company, (m) => m.EngagementModelsPage) },
       { path: 'team', lazy: lazyPage(people, (m) => m.TeamPage) },
       { path: 'leadership', lazy: lazyPage(people, (m) => m.LeadershipPage) },
-      { path: 'portfolio', lazy: lazyPage(people, (m) => m.PortfolioPage) },
+      { path: 'portfolio', loader: contentLoader('services'), lazy: lazyPage(people, (m) => m.PortfolioPage) },
       { path: 'hire-developers', lazy: lazyPage(sales, (m) => m.HireDevelopersPage) },
       { path: 'developers', lazy: lazyPage(sales, (m) => m.DevelopersPage) },
       { path: 'pricing', lazy: lazyPage(sales, (m) => m.PricingPage) },
       { path: 'faq', lazy: lazyPage(sales, (m) => m.FaqPage) },
-      { path: 'case-studies', lazy: lazyPage(caseStudies, (m) => m.CaseStudiesPage) },
-      { path: 'case-studies/:slug', lazy: lazyPage(caseStudyDetail, (m) => m.CaseStudyDetailPage) },
-      { path: 'blog', lazy: lazyPage(blog, (m) => m.BlogPage) },
-      { path: 'blog/:slug', lazy: lazyPage(blog, (m) => m.BlogPostPage) },
-      { path: 'guides', lazy: lazyPage(blog, (m) => m.GuidesPage) },
-      { path: 'whitepapers', lazy: lazyPage(blog, (m) => m.WhitepapersPage) },
-      { path: 'reports', lazy: lazyPage(blog, (m) => m.ReportsPage) },
-      { path: 'webinars', lazy: lazyPage(blog, (m) => m.WebinarsPage) },
-      { path: 'search', lazy: lazyPage(search, (m) => m.SearchPage) },
+      { path: 'case-studies', loader: contentLoader('caseStudies', 'industries'), lazy: lazyPage(caseStudies, (m) => m.CaseStudiesPage) },
+      { path: 'case-studies/:slug', loader: contentLoader('caseStudies', 'industries', 'products', 'services'), lazy: lazyPage(caseStudyDetail, (m) => m.CaseStudyDetailPage) },
+      { path: 'blog', loader: contentLoader('posts'), lazy: lazyPage(blog, (m) => m.BlogPage) },
+      { path: 'blog/:slug', loader: contentLoader('posts', 'products'), lazy: lazyPage(blog, (m) => m.BlogPostPage) },
+      { path: 'guides', loader: contentLoader('posts'), lazy: lazyPage(blog, (m) => m.GuidesPage) },
+      { path: 'whitepapers', loader: contentLoader('posts'), lazy: lazyPage(blog, (m) => m.WhitepapersPage) },
+      { path: 'reports', loader: contentLoader('posts'), lazy: lazyPage(blog, (m) => m.ReportsPage) },
+      { path: 'webinars', loader: contentLoader('posts'), lazy: lazyPage(blog, (m) => m.WebinarsPage) },
+      { path: 'search', loader: searchLoader, lazy: lazyPage(search, (m) => m.SearchPage) },
       { path: 'newsletter', lazy: lazyPage(newsletter, (m) => m.NewsletterPage) },
       { path: 'privacy', lazy: lazyPage(legal, (m) => m.PrivacyPage) },
       { path: 'terms', lazy: lazyPage(legal, (m) => m.TermsPage) },

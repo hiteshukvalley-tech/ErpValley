@@ -5,7 +5,7 @@ Marketing, lead-generation and customer platform for ERPVALLEY ERP products and 
 | App | Stack | Status |
 |---|---|---|
 | `client/` | React 19, Vite, TypeScript, Tailwind CSS 4, React Router 7, Lucide | Steps 1–4 complete |
-| `server/` | Node.js, Express 5, TypeScript, MongoDB Atlas (Mongoose), Zod | Step 5: read-only content API |
+| `server/` | Node.js, Express 5, TypeScript, MongoDB Atlas (Mongoose), Zod | Step 5 complete: read-only content API |
 
 ## Build steps
 
@@ -13,7 +13,7 @@ Marketing, lead-generation and customer platform for ERPVALLEY ERP products and 
 2. Homepage — done
 3. Product, industry and service pages — done
 4. Company, resources, legal and search pages — done
-5. **Backend API**: content models, seed, public read API, search — done. Next: switch the client to the API.
+5. Backend API: content models, seed, public read API, search; the website reads content from the API — done
 6. Lead forms: contact, book a demo, request a quote, newsletter
 7. Accounts and admin panel (case studies, settings, content editing)
 
@@ -51,6 +51,12 @@ All responses are JSON. Content uses the same shapes as `client/src/content/type
 | `GET /api/case-studies`, `/api/case-studies/:slug` | Published (client-approved) case studies only |
 | `GET /api/search?q=` | Full-text search across products, industries, services and articles |
 
+The website loads products, industries, services, articles and case studies from the API through route loaders,
+and uses `/api/search` for search. If the API cannot be reached it falls back to the content bundled in
+`client/src/content`, so the site keeps working without the server. `VITE_API_URL` sets the API address
+(default `/api`; `off` uses only the bundled content). If the API is on another domain, add the website's address
+to the server's `CORS_ORIGIN`. Icons travel as Lucide names; a new icon must be added to `client/src/content/icons.ts`.
+
 Security defaults: Helmet headers, CORS limited to `CORS_ORIGIN`, rate limiting on `/api`, validated query
 parameters, and errors that never expose internal details. Server tests run against an in-memory MongoDB, so they
 do not need Atlas.
@@ -72,7 +78,7 @@ client/src/
   layouts/               PublicLayout
   pages/                 Home, products/, industries/, services/, company/, resources/, legal/, 404, 500
   routes/                router.tsx (pages other than the homepage are lazy-loaded)
-  services/              searchIndex.ts (client-side search, to be replaced by /api/search)
+  services/              api.ts, content.ts (route loaders: API first, bundled content as fallback), search.ts
   styles/                index.css (design tokens, light/dark themes)
   test/                  unit tests
 ```
@@ -100,5 +106,9 @@ that switch automatically between light and dark themes.
 
 ## Logo
 
-`client/src/components/common/Logo.tsx` currently renders a **temporary text wordmark**. Replace it with the official
-logo file (instructions in that file).
+The official logo is in `client/src/assets/brand/` and is rendered by `client/src/components/common/Logo.tsx`
+(header, footer, mobile menu). `erpvalley-logo-original.png` is the file as supplied; the website uses two
+web-ready versions made from it (cropped, transparent background): `erpvalley-logo.png` for light backgrounds
+and `erpvalley-logo-on-dark.png` (white "ALLEY") for the footer and dark mode. The favicon
+(`client/public/favicon.svg`) uses the logo's two-tone "V". If you get an SVG version of the logo, replace the
+two PNGs with it for the sharpest result.

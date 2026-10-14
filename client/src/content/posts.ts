@@ -829,6 +829,3 @@ export const posts: PostContent[] = [
 ]
 
 export const postBySlug = new Map(posts.map((p) => [p.slug, p]))
-
-export const readingMinutes = (p: PostContent) =>
-  Math.max(1, Math.round(p.body.reduce((n, b) => n + (b.type === 'ul' ? b.items.join(' ') : b.text).split(/\s+/).length, 0) / 220))

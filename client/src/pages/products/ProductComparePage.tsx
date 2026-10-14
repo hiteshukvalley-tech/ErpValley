@@ -5,9 +5,9 @@ import { PageHero } from '@/components/common/PageHero'
 import { Button } from '@/components/ui/Button'
 import { Reveal } from '@/components/ui/Reveal'
 import { Section, SectionHeader } from '@/components/ui/Section'
-import { products, productBySlug } from '@/content/products'
 import type { ProductSlug } from '@/content/types'
 import { usePageMeta } from '@/hooks/usePageMeta'
+import { bySlug, useContent } from '@/services/content'
 import { cn } from '@/utils/cn'
 
 /** Suggested starting sets by business stage. Recommendations only; pricing is quoted separately. */
@@ -45,9 +45,10 @@ const sets: { name: string; icon: typeof Rocket; fit: string; modules: ProductSl
   },
 ]
 
-const modules = products.filter((p) => p.slug !== 'erp-platform')
-
 export function ProductComparePage() {
+  const { products } = useContent<'products'>()
+  const productBySlug = bySlug(products)
+  const modules = products.filter((p) => p.slug !== 'erp-platform')
   usePageMeta(
     'Compare ERP Modules',
     'Compare ERPVALLEY modules side by side: what each one does, who uses it and which modules work best together, plus suggested starting sets by business stage.',

@@ -4,10 +4,11 @@ import { LinkCards } from '@/components/common/LinkCards'
 import { PageHero } from '@/components/common/PageHero'
 import { Button } from '@/components/ui/Button'
 import { Section } from '@/components/ui/Section'
-import { industries } from '@/content/industries'
 import { usePageMeta } from '@/hooks/usePageMeta'
+import { useContent } from '@/services/content'
 
 export function IndustriesPage() {
+  const { industries } = useContent<'industries'>()
   usePageMeta(
     'ERP Solutions by Industry',
     'ERPVALLEY ERP solutions for manufacturing, retail, fintech, healthcare, education, logistics, real estate, professional services, distribution, hospitality and construction.',

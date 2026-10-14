@@ -4,10 +4,11 @@ import { LinkCards } from '@/components/common/LinkCards'
 import { PageHero } from '@/components/common/PageHero'
 import { Button } from '@/components/ui/Button'
 import { Section } from '@/components/ui/Section'
-import { services } from '@/content/services'
 import { usePageMeta } from '@/hooks/usePageMeta'
+import { useContent } from '@/services/content'
 
 export function ServicesPage() {
+  const { services } = useContent<'services'>()
   usePageMeta(
     'ERP and IT Services',
     'ERPVALLEY services: custom ERP development, implementation, consulting, legacy modernization, cloud, APIs, integrations, data migration, UI/UX, AI, QA and support.',

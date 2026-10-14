@@ -9,20 +9,23 @@ import { LinkCards } from '@/components/common/LinkCards'
 import { Steps } from '@/components/common/Steps'
 import { Button } from '@/components/ui/Button'
 import { Section, SectionHeader } from '@/components/ui/Section'
-import { productBySlug } from '@/content/products'
-import { serviceBySlug } from '@/content/services'
-import type { ServiceContent, ServiceSlug } from '@/content/types'
+import type { ServiceContent } from '@/content/types'
 import { usePageMeta } from '@/hooks/usePageMeta'
 import { NotFoundPage } from '@/pages/NotFoundPage'
+import { bySlug, useContent } from '@/services/content'
 
 export function ServiceDetailPage() {
-  const { slug } = useParams()
-  const service = serviceBySlug.get(slug as ServiceSlug)
+  const { slug = '' } = useParams()
+  const { services } = useContent<'services'>()
+  const service = bySlug(services).get(slug)
   return service ? <ServiceView key={service.slug} service={service} /> : <NotFoundPage />
 }
 
 function ServiceView({ service: s }: { service: ServiceContent }) {
   usePageMeta(s.name, s.metaDescription)
+  const content = useContent<'services' | 'products'>()
+  const serviceBySlug = bySlug(content.services)
+  const productBySlug = bySlug(content.products)
   const relatedServices = s.relatedServices.flatMap((slug) => {
     const r = serviceBySlug.get(slug)
     return r ? [{ to: `/services/${r.slug}`, title: r.name, text: r.summary, icon: r.icon }] : []

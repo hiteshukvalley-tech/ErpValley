@@ -7,23 +7,28 @@ import { LinkCards } from '@/components/common/LinkCards'
 import { Steps } from '@/components/common/Steps'
 import { Button } from '@/components/ui/Button'
 import { Section, SectionHeader } from '@/components/ui/Section'
-import { caseStudies, caseStudyBySlug } from '@/content/caseStudies'
-import { industryBySlug } from '@/content/industries'
-import { productBySlug } from '@/content/products'
-import { serviceBySlug } from '@/content/services'
 import type { CaseStudyContent } from '@/content/types'
 import { usePageMeta } from '@/hooks/usePageMeta'
 import { NotFoundPage } from '@/pages/NotFoundPage'
+import { bySlug, useContent, type Collections } from '@/services/content'
 
 export function CaseStudyDetailPage() {
   const { slug = '' } = useParams()
-  const study = caseStudyBySlug.get(slug)
-  return study ? <CaseStudyView key={study.slug} study={study} related={caseStudies} /> : <NotFoundPage />
+  const content = useContent<'caseStudies' | 'industries' | 'products' | 'services'>()
+  const study = bySlug(content.caseStudies).get(slug)
+  return study ? <CaseStudyView key={study.slug} study={study} related={content.caseStudies} content={content} /> : <NotFoundPage />
 }
 
 /** Case study template. Exported separately so it can be tested with fixture data. */
-export function CaseStudyView({ study: c, related }: { study: CaseStudyContent; related: CaseStudyContent[] }) {
+export function CaseStudyView({ study: c, related, content }: {
+  study: CaseStudyContent
+  related: CaseStudyContent[]
+  content: Pick<Collections, 'industries' | 'products' | 'services'>
+}) {
   usePageMeta(c.title, c.metaDescription)
+  const industryBySlug = bySlug(content.industries)
+  const productBySlug = bySlug(content.products)
+  const serviceBySlug = bySlug(content.services)
   const industry = industryBySlug.get(c.industry)
   const others = related
     .filter((r) => r.slug !== c.slug)

@@ -11,19 +11,21 @@ import { ModulePreview } from '@/components/mockups/ModulePreview'
 import { Button } from '@/components/ui/Button'
 import { Reveal } from '@/components/ui/Reveal'
 import { Section, SectionHeader } from '@/components/ui/Section'
-import { productBySlug } from '@/content/products'
-import type { ProductContent, ProductSlug } from '@/content/types'
+import type { ProductContent } from '@/content/types'
 import { usePageMeta } from '@/hooks/usePageMeta'
+import { bySlug, useContent } from '@/services/content'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 
 export function ProductDetailPage() {
-  const { slug } = useParams()
-  const product = productBySlug.get(slug as ProductSlug)
+  const { slug = '' } = useParams()
+  const { products } = useContent<'products'>()
+  const product = bySlug(products).get(slug)
   return product ? <ProductView key={product.slug} product={product} /> : <NotFoundPage />
 }
 
 function ProductView({ product: p }: { product: ProductContent }) {
   usePageMeta(`${p.name} Software`, p.metaDescription)
+  const productBySlug = bySlug(useContent<'products'>().products)
   const related = p.relatedModules.flatMap((s) => {
     const r = productBySlug.get(s)
     return r ? [{ to: `/products/${r.slug}`, title: r.name, text: r.purpose, icon: r.icon }] : []

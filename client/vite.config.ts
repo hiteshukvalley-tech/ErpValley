@@ -18,5 +18,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     css: false,
+    // The first test in each file renders the whole app from a cold start, which can take a few seconds.
+    testTimeout: 15000,
   },
 })

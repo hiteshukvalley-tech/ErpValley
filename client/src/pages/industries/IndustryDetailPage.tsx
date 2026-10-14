@@ -10,20 +10,21 @@ import { Steps } from '@/components/common/Steps'
 import { Button } from '@/components/ui/Button'
 import { Reveal } from '@/components/ui/Reveal'
 import { Section, SectionHeader } from '@/components/ui/Section'
-import { industryBySlug } from '@/content/industries'
-import { productBySlug } from '@/content/products'
-import type { IndustryContent, IndustrySlug } from '@/content/types'
+import type { IndustryContent } from '@/content/types'
 import { usePageMeta } from '@/hooks/usePageMeta'
 import { NotFoundPage } from '@/pages/NotFoundPage'
+import { bySlug, useContent } from '@/services/content'
 
 export function IndustryDetailPage() {
-  const { slug } = useParams()
-  const industry = industryBySlug.get(slug as IndustrySlug)
+  const { slug = '' } = useParams()
+  const { industries } = useContent<'industries'>()
+  const industry = bySlug(industries).get(slug)
   return industry ? <IndustryView key={industry.slug} industry={industry} /> : <NotFoundPage />
 }
 
 function IndustryView({ industry: ind }: { industry: IndustryContent }) {
   usePageMeta(`ERP for ${ind.name}`, ind.metaDescription)
+  const productBySlug = bySlug(useContent<'products'>().products)
   const modules = ind.modules.flatMap(({ slug, why }) => {
     const p = productBySlug.get(slug)
     return p ? [{ to: `/products/${p.slug}`, title: p.name, text: why, icon: p.icon }] : []
