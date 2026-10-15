@@ -21,6 +21,11 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
     res.status(400).json({ error: { message: 'Invalid request', issues: z.flattenError(err).fieldErrors } })
     return
   }
+  // Deliberate errors (including 503 "temporarily unavailable") keep their status and message.
+  if (err instanceof HttpError) {
+    res.status(err.status).json({ error: { message: err.message } })
+    return
+  }
   // Express and body-parser set `status` on client errors such as malformed JSON.
   const status = typeof err?.status === 'number' ? err.status : 500
   if (status >= 500) {
@@ -28,5 +33,5 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
     res.status(500).json({ error: { message: 'Internal server error' } })
     return
   }
-  res.status(status).json({ error: { message: err instanceof HttpError || err?.expose ? err.message : 'Bad request' } })
+  res.status(status).json({ error: { message: err?.expose ? err.message : 'Bad request' } })
 }

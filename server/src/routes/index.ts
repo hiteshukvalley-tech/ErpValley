@@ -3,6 +3,7 @@ import { isDatabaseConnected } from '../db/connect.js'
 import { HttpError } from '../middleware/errors.js'
 import { SiteSetting } from '../models/index.js'
 import { caseStudiesRouter, industriesRouter, postsRouter, productsRouter, servicesRouter } from './content.js'
+import { formsRouter } from './forms.js'
 import { searchRouter } from './search.js'
 
 export const apiRouter = Router()
@@ -24,3 +25,4 @@ apiRouter.use('/services', servicesRouter)
 apiRouter.use('/posts', postsRouter)
 apiRouter.use('/case-studies', caseStudiesRouter)
 apiRouter.use('/search', searchRouter)
+apiRouter.use(formsRouter)

@@ -4,8 +4,8 @@ Marketing, lead-generation and customer platform for ERPVALLEY ERP products and 
 
 | App | Stack | Status |
 |---|---|---|
-| `client/` | React 19, Vite, TypeScript, Tailwind CSS 4, React Router 7, Lucide | Steps 1–4 complete |
-| `server/` | Node.js, Express 5, TypeScript, MongoDB Atlas (Mongoose), Zod | Step 5 complete: read-only content API |
+| `client/` | React 19, Vite, TypeScript, Tailwind CSS 4, React Router 7, Lucide | Steps 1–6 complete |
+| `server/` | Node.js, Express 5, TypeScript, MongoDB Atlas (Mongoose), Zod | Steps 5–6 complete: content API and lead forms |
 
 ## Build steps
 
@@ -14,7 +14,7 @@ Marketing, lead-generation and customer platform for ERPVALLEY ERP products and 
 3. Product, industry and service pages — done
 4. Company, resources, legal and search pages — done
 5. Backend API: content models, seed, public read API, search; the website reads content from the API — done
-6. Lead forms: contact, book a demo, request a quote, newsletter
+6. Lead forms: contact, book a demo, request a quote, newsletter — done (stored in MongoDB; email alerts not set up yet)
 7. Accounts and admin panel (case studies, settings, content editing)
 
 ## Run locally
@@ -50,6 +50,18 @@ All responses are JSON. Content uses the same shapes as `client/src/content/type
 | `GET /api/posts?category=&kind=`, `/api/posts/:slug` | Blog articles and guides, newest first |
 | `GET /api/case-studies`, `/api/case-studies/:slug` | Published (client-approved) case studies only |
 | `GET /api/search?q=` | Full-text search across products, industries, services and articles |
+| `POST /api/leads/contact` | Contact form: name, email, topic, message (+ company, phone) |
+| `POST /api/leads/demo` | Book a demo: name, email, company, company size, modules, notes |
+| `POST /api/leads/quote` | Request a quote: as demo, plus services, timeline and requirements |
+| `POST /api/newsletter` | Newsletter signup (one record per email address) |
+
+Form endpoints need `consent: true`, answer `201` on success and `400` with per-field messages for invalid input.
+Leads and subscribers are stored in the `leads` and `subscribers` collections and are never exposed by the public
+API; view them in Atlas (Browse Collections) until the admin panel arrives in Step 7. Spam protection: a hidden
+honeypot field (bots get a normal response but nothing is stored) and a limit of 10 submissions per IP per 15
+minutes. Choice lists (topics, company sizes, timelines) live in `client/src/config/forms.ts` and
+`server/src/validation/forms.ts`; a test checks they match. To email the team about new leads, add an email service
+in `server/src/services/notify.ts`.
 
 The website loads products, industries, services, articles and case studies from the API through route loaders,
 and uses `/api/search` for search. If the API cannot be reached it falls back to the content bundled in
@@ -71,12 +83,13 @@ client/src/
   components/navigation  Header, MegaMenu, MobileNav, Footer
   components/ui          Button, Card, Badge, Container, Section, Accordion, EmptyState, Reveal
   components/home        Homepage sections
+  components/forms       LeadForm (contact, demo and quote forms)
   components/mockups     Dashboard and module previews (sample data)
-  config/                navigation.ts (menus + page registry), site.ts (contact details)
+  config/                navigation.ts (menus + page registry), site.ts (contact details), forms.ts (form choices)
   content/               Page content (products, industries, services, posts, company, legal) + types.ts
   hooks/                 useTheme, usePageMeta, useInView
   layouts/               PublicLayout
-  pages/                 Home, products/, industries/, services/, company/, resources/, legal/, 404, 500
+  pages/                 Home, products/, industries/, services/, company/, resources/, leads/, legal/, 404, 500
   routes/                router.tsx (pages other than the homepage are lazy-loaded)
   services/              api.ts, content.ts (route loaders: API first, bundled content as fallback), search.ts
   styles/                index.css (design tokens, light/dark themes)
@@ -91,8 +104,10 @@ server/src/
   server.ts         Entry point: validate env, connect to MongoDB, listen, graceful shutdown
   config/env.ts     Environment validation (Zod)
   db/               MongoDB connection
-  models/           Product, Industry, Service, Post, CaseStudy, SiteSetting
-  routes/           Content, search, settings and health endpoints
+  models/           Product, Industry, Service, Post, CaseStudy, SiteSetting, Lead, Subscriber
+  routes/           Content, search, forms, settings and health endpoints
+  validation/       Form input rules (Zod)
+  services/         New-lead notification (logs only; email can be added here)
   seed/             Upsert logic used by the seed script
   scripts/          npm run seed (loads client/src/content)
 server/test/        API tests (Vitest + Supertest + in-memory MongoDB)

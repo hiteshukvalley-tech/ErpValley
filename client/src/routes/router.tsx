@@ -33,6 +33,7 @@ const blog = () => import('@/pages/resources/BlogPages')
 const newsletter = () => import('@/pages/resources/NewsletterPage')
 const search = () => import('@/pages/resources/SearchPage')
 const legal = () => import('@/pages/legal/LegalPages')
+const leads = () => import('@/pages/leads/LeadPages')
 
 export const routes: RouteObject[] = [
   {
@@ -73,6 +74,9 @@ export const routes: RouteObject[] = [
       { path: 'webinars', loader: contentLoader('posts'), lazy: lazyPage(blog, (m) => m.WebinarsPage) },
       { path: 'search', loader: searchLoader, lazy: lazyPage(search, (m) => m.SearchPage) },
       { path: 'newsletter', lazy: lazyPage(newsletter, (m) => m.NewsletterPage) },
+      { path: 'contact', lazy: lazyPage(leads, (m) => m.ContactPage) },
+      { path: 'book-demo', loader: contentLoader('products'), lazy: lazyPage(leads, (m) => m.BookDemoPage) },
+      { path: 'request-quote', loader: contentLoader('products', 'services'), lazy: lazyPage(leads, (m) => m.RequestQuotePage) },
       { path: 'privacy', lazy: lazyPage(legal, (m) => m.PrivacyPage) },
       { path: 'terms', lazy: lazyPage(legal, (m) => m.TermsPage) },
       { path: 'cookies', lazy: lazyPage(legal, (m) => m.CookiesPage) },

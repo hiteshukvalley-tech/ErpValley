@@ -1,5 +1,5 @@
 import type { Model } from 'mongoose'
-import { CaseStudy, Industry, Post, Product, Service, SiteSetting } from '../models/index.js'
+import { CaseStudy, Industry, Lead, Post, Product, Service, SiteSetting, Subscriber } from '../models/index.js'
 
 type Doc = Record<string, unknown> & { slug: string }
 
@@ -33,7 +33,7 @@ async function upsertBySlug(model: Model<any>, docs: Doc[], extra: (doc: Doc, i:
 
 export async function seedDatabase(content: SeedContent): Promise<SeedReport> {
   // Build indexes first (including text search indexes), since production disables autoIndex.
-  await Promise.all([Product, Industry, Service, Post, CaseStudy, SiteSetting].map((m) => m.createIndexes()))
+  await Promise.all([Product, Industry, Service, Post, CaseStudy, SiteSetting, Lead, Subscriber].map((m) => m.createIndexes()))
 
   const report: SeedReport = {
     products: await upsertBySlug(Product, content.products, (_d, i) => ({ order: i })),

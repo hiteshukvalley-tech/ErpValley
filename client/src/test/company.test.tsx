@@ -37,6 +37,9 @@ const staticPages: [path: string, h1: RegExp][] = [
   ['/webinars', /webinars/i],
   ['/search', /search erpvalley/i],
   ['/newsletter', /inbox/i],
+  ['/contact', /talk to the erpvalley team/i],
+  ['/book-demo', /working with your processes/i],
+  ['/request-quote', /quote scoped/i],
   ['/privacy', /privacy/i],
   ['/terms', /terms/i],
   ['/cookies', /cookie/i],
@@ -138,25 +141,6 @@ describe('search', () => {
   it('shows an empty state when nothing matches', async () => {
     await renderAt('/search?q=zzqxv')
     expect(screen.getByText('No results found')).toBeInTheDocument()
-  })
-})
-
-describe('newsletter', () => {
-  it('validates input and never claims the address was saved', async () => {
-    const user = userEvent.setup()
-    await renderAt('/newsletter?email=bad')
-    expect(screen.getByLabelText('Business email')).toHaveValue('bad')
-    await user.click(screen.getByRole('button', { name: 'Subscribe' }))
-    expect(screen.getByRole('alert')).toHaveTextContent('valid email')
-
-    await user.clear(screen.getByLabelText('Business email'))
-    await user.type(screen.getByLabelText('Business email'), 'ops@example.com')
-    await user.click(screen.getByRole('button', { name: 'Subscribe' }))
-    expect(screen.getByRole('alert')).toHaveTextContent('confirm')
-
-    await user.click(screen.getByRole('checkbox'))
-    await user.click(screen.getByRole('button', { name: 'Subscribe' }))
-    expect(screen.getByRole('status')).toHaveTextContent('has not been stored')
   })
 })
 

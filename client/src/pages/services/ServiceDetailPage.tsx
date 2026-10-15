@@ -45,7 +45,7 @@ function ServiceView({ service: s }: { service: ServiceContent }) {
         description={s.summary}
         actions={
           <>
-            <Button to="/request-quote" size="lg">
+            <Button to={`/request-quote?service=${s.slug}`} size="lg">
               Request a Quote <ArrowRight className="size-4" aria-hidden />
             </Button>
             <Button to="/contact" variant="onDark" size="lg">Talk to an expert</Button>
@@ -144,7 +144,7 @@ function ServiceView({ service: s }: { service: ServiceContent }) {
       <CtaBand
         title={`Discuss your ${s.name.toLowerCase()} project`}
         text="Share your requirements and we will reply with a scoped estimate and recommended next steps."
-        primary={{ label: 'Request a Quote', to: '/request-quote' }}
+        primary={{ label: 'Request a Quote', to: `/request-quote?service=${s.slug}` }}
         secondary={{ label: 'Book a call', to: '/book-demo' }}
       />
     </>

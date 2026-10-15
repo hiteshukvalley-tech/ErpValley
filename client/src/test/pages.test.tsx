@@ -6,7 +6,9 @@ import { products, productBySlug } from '@/content/products'
 import { services, serviceBySlug } from '@/content/services'
 import { renderAt } from './utils'
 
-const internalLinks = () => [...new Set(screen.getAllByRole('link').map((a) => a.getAttribute('href')!))].filter((h) => h.startsWith('/'))
+/** Internal link paths on the page, without query strings (e.g. /book-demo?module=crm → /book-demo). */
+const internalLinks = () =>
+  [...new Set(screen.getAllByRole('link').map((a) => a.getAttribute('href')!.split(/[?#]/)[0]))].filter((h) => h.startsWith('/'))
 
 describe('content integrity', () => {
   it('has one content entry per menu item, with matching names', async () => {

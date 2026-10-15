@@ -41,10 +41,10 @@ function ProductView({ product: p }: { product: ProductContent }) {
         description={p.summary}
         actions={
           <>
-            <Button to="/book-demo" size="lg">
+            <Button to={`/book-demo?module=${p.slug}`} size="lg">
               Book a Demo <ArrowRight className="size-4" aria-hidden />
             </Button>
-            <Button to="/request-quote" variant="onDark" size="lg">Request a Quote</Button>
+            <Button to={`/request-quote?module=${p.slug}`} variant="onDark" size="lg">Request a Quote</Button>
           </>
         }
         meta={

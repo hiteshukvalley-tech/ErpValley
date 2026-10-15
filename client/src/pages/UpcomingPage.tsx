@@ -8,15 +8,12 @@ import { usePageMeta } from '@/hooks/usePageMeta'
 
 const sectionFor = (path: string) => {
   const seg = path.split('/')[1]
-  // Only pages without their own route reach here: lead forms (Step 6) and accounts (Step 7).
+  // Only pages without their own route reach here: accounts (Step 7).
   const map: Record<string, [string, number]> = {
-    'book-demo': ['Get started', 6],
-    'request-quote': ['Get started', 6],
-    contact: ['Get started', 6],
     login: ['Account', 7],
     register: ['Account', 7],
   }
-  return map[seg] ?? ['ERPVALLEY', 6]
+  return map[seg] ?? ['ERPVALLEY', 7]
 }
 
 /**
