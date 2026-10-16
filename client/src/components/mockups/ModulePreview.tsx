@@ -75,7 +75,7 @@ function FinancePreview() {
               <span
                 className={cn(
                   'rounded-full px-2 py-0.5 text-[10px] font-semibold',
-                  inv.paid ? 'bg-emerald-500/12 text-emerald-600 dark:text-emerald-400' : 'bg-bg-alt text-fg-muted',
+                  inv.paid ? 'bg-emerald-500/12 text-emerald-700 dark:text-emerald-400' : 'bg-bg-alt text-fg-muted',
                 )}
               >
                 {inv.paid ? 'Paid' : 'Open'}
@@ -182,7 +182,7 @@ function InventoryPreview() {
                     </span>
                   )}
                   {r.status === 'ok' && (
-                    <span className="rounded-full bg-emerald-500/12 px-2 py-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+                    <span className="rounded-full bg-emerald-500/12 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:text-emerald-400">
                       In stock
                     </span>
                   )}

@@ -39,7 +39,7 @@ export function Capabilities() {
         </div>
 
         <Reveal>
-          <div className="rounded-3xl border border-line bg-bg-alt p-6 sm:p-8">
+          <div className="card-hover rounded-3xl border border-line bg-bg-alt p-6 sm:p-8">
             <p className="text-center text-sm font-semibold text-fg-muted">Integration hub</p>
             <div className="relative mx-auto mt-6 grid max-w-md grid-cols-2 gap-3 sm:grid-cols-3">
               {integrationCategories.slice(0, 4).map((c) => (
@@ -47,7 +47,7 @@ export function Capabilities() {
               ))}
               <div className="col-span-2 flex flex-col items-center justify-center rounded-2xl bg-primary p-4 text-center text-white shadow-pop sm:col-span-1 sm:row-span-1">
                 <span className="font-display text-sm font-extrabold">ERPVALLEY</span>
-                <span className="mt-0.5 text-[11px] text-white/80">REST API · Webhooks</span>
+                <span className="mt-0.5 text-[11px] text-white">REST API · Webhooks</span>
               </div>
               {integrationCategories.slice(4).map((c) => (
                 <IntegrationChip key={c.label} {...c} />
@@ -69,7 +69,7 @@ export function Capabilities() {
 
 function IntegrationChip({ label, icon: Icon }: { label: string; icon: LucideIcon }) {
   return (
-    <div className="flex flex-col items-center gap-2 rounded-2xl border border-line bg-surface p-4 text-center shadow-card">
+    <div className="card-hover flex flex-col items-center gap-2 rounded-2xl border border-line bg-surface p-4 text-center shadow-card">
       <Icon className="size-5 text-link" aria-hidden />
       <span className="text-xs font-semibold text-fg">{label}</span>
     </div>

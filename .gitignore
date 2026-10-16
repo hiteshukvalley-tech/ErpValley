@@ -11,3 +11,6 @@ coverage/
 .idea/
 playwright-report/
 test-results/
+
+# Built site packages for upload
+*.zip

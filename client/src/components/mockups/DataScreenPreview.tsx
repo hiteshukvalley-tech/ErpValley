@@ -4,7 +4,7 @@ import { cn } from '@/utils/cn'
 const statusTone = (s: string) => {
   const v = s.toLowerCase()
   if (/(approved|paid|done|complete|active|running|received|shipped|posted|resolved|on track)/.test(v))
-    return 'bg-emerald-500/12 text-emerald-600 dark:text-emerald-400'
+    return 'bg-emerald-500/12 text-emerald-700 dark:text-emerald-400'
   if (/(overdue|rejected|failed|blocked|late|short|at risk)/.test(v)) return 'bg-rose-500/12 text-rose-600 dark:text-rose-400'
   if (/(pending|review|waiting|draft|scheduled|partial|hold)/.test(v)) return 'bg-amber-500/14 text-amber-700 dark:text-amber-400'
   return 'bg-primary-soft text-link'

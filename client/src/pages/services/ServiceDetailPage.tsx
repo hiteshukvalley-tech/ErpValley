@@ -9,6 +9,7 @@ import { LinkCards } from '@/components/common/LinkCards'
 import { Steps } from '@/components/common/Steps'
 import { Button } from '@/components/ui/Button'
 import { Section, SectionHeader } from '@/components/ui/Section'
+import { servicePhotos } from '@/content/photos'
 import type { ServiceContent } from '@/content/types'
 import { usePageMeta } from '@/hooks/usePageMeta'
 import { NotFoundPage } from '@/pages/NotFoundPage'
@@ -41,6 +42,7 @@ function ServiceView({ service: s }: { service: ServiceContent }) {
         crumbs={[{ label: 'Services', to: '/services' }, { label: s.name }]}
         eyebrow="Services"
         icon={s.icon}
+        image={servicePhotos[s.slug]}
         title={s.headline}
         description={s.summary}
         actions={
@@ -52,7 +54,7 @@ function ServiceView({ service: s }: { service: ServiceContent }) {
           </>
         }
         visual={
-          <div className="rounded-2xl border border-white/15 bg-white/[0.04] p-6 backdrop-blur-sm sm:p-7">
+          <div className="card-hover rounded-2xl border border-white/15 bg-white/[0.04] p-6 backdrop-blur-sm sm:p-7 hover:bg-white/[0.08]">
             <p className="flex items-center gap-2 text-sm font-semibold text-white">
               <FileCheck2 className="size-4 text-logo-blue" aria-hidden /> What you receive
             </p>
@@ -108,7 +110,7 @@ function ServiceView({ service: s }: { service: ServiceContent }) {
                   <li key={p.slug}>
                     <Link
                       to={`/products/${p.slug}`}
-                      className="group flex items-center gap-3 rounded-xl border border-line bg-surface p-4 shadow-card hover:border-link/50"
+                      className="group flex items-center gap-3 rounded-xl border border-line bg-surface p-4 shadow-card card-link"
                     >
                       <span className="inline-flex size-9 items-center justify-center rounded-lg bg-primary-soft text-link">
                         <p.icon className="size-4" aria-hidden />

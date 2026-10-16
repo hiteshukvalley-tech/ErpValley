@@ -5,15 +5,16 @@ import { cn } from '@/utils/cn'
 type Variant = 'primary' | 'secondary' | 'ghost' | 'onDark'
 type Size = 'sm' | 'md' | 'lg'
 
+// Hover changes colour (and a soft glow on primary); pressing scales down slightly. Arrows slide via styles/index.css.
 const base =
-  'inline-flex items-center justify-center gap-2 rounded-lg font-semibold whitespace-nowrap transition-colors duration-150 disabled:pointer-events-none disabled:opacity-50'
+  'inline-flex items-center justify-center gap-2 rounded-lg font-semibold whitespace-nowrap transition-[color,background-color,border-color,box-shadow,scale] duration-150 ease-out active:scale-[0.98] motion-reduce:active:scale-100 disabled:pointer-events-none disabled:opacity-50'
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-primary text-white shadow-sm hover:bg-primary-hover',
-  secondary: 'border border-line bg-surface text-fg hover:border-link hover:text-link',
+  primary: 'bg-primary text-white shadow-sm hover:bg-primary-hover hover:shadow-[0_8px_22px_-8px_rgb(11_92_255/0.75)]',
+  secondary: 'border border-line bg-surface text-fg hover:border-link hover:bg-primary-soft hover:text-link',
   ghost: 'text-fg-muted hover:bg-bg-alt hover:text-fg',
   // Outline button for navy/gradient backgrounds in both themes.
-  onDark: 'border border-white/25 text-white hover:border-white/60 hover:bg-white/10',
+  onDark: 'border border-white/25 text-white hover:border-white/70 hover:bg-white/10',
 }
 
 const sizes: Record<Size, string> = {

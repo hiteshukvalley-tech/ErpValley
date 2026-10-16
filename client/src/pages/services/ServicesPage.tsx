@@ -1,9 +1,10 @@
 import { ArrowRight } from 'lucide-react'
 import { CtaBand } from '@/components/common/CtaBand'
-import { LinkCards } from '@/components/common/LinkCards'
+import { PhotoCards } from '@/components/common/PhotoCards'
 import { PageHero } from '@/components/common/PageHero'
 import { Button } from '@/components/ui/Button'
 import { Section } from '@/components/ui/Section'
+import { photos, servicePhotos } from '@/content/photos'
 import { usePageMeta } from '@/hooks/usePageMeta'
 import { useContent } from '@/services/content'
 
@@ -19,6 +20,7 @@ export function ServicesPage() {
         eyebrow="Services"
         title="ERP and IT services, end to end"
         description="From first consultation to long-term support, our team plans, builds, integrates and maintains the systems your business runs on."
+        image={photos.teamLaptops}
         actions={
           <>
             <Button to="/request-quote" size="lg">
@@ -29,9 +31,9 @@ export function ServicesPage() {
         }
       />
       <Section aria-label="All services">
-        <LinkCards
-          items={services.map((s) => ({ to: `/services/${s.slug}`, title: s.name, text: s.summary, icon: s.icon }))}
-          columns={3}
+        <PhotoCards
+          cta="View service"
+          items={services.map((s) => ({ to: `/services/${s.slug}`, title: s.name, text: s.summary, icon: s.icon, photo: servicePhotos[s.slug] }))}
         />
       </Section>
       <CtaBand

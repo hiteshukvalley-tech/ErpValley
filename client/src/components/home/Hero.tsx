@@ -46,7 +46,7 @@ export function Hero() {
             {heroKeyPoints.map((k) => (
               <li
                 key={k.label}
-                className="flex flex-col items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-2 py-3 text-xs font-medium text-white"
+                className="card-hover flex flex-col items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-2 py-3 text-xs font-medium text-white hover:bg-white/[0.08]"
               >
                 <k.icon className="size-5 text-logo-blue" aria-hidden />
                 {k.label}
@@ -73,7 +73,7 @@ export function Hero() {
               aria-hidden
             >
               <p className="flex items-center gap-2 text-xs font-semibold text-fg">
-                <span className="inline-flex size-7 items-center justify-center rounded-lg bg-emerald-500/12 text-emerald-600 dark:text-emerald-400">
+                <span className="inline-flex size-7 items-center justify-center rounded-lg bg-emerald-500/12 text-emerald-700 dark:text-emerald-400">
                   <BadgeCheck className="size-4" />
                 </span>
                 Payment received

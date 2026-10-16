@@ -531,7 +531,7 @@ export const products: ProductContent[] = [
         text: 'HR creates the employee profile, attaches the signed contract, assigns a salary structure and triggers an onboarding checklist for IT and the manager.',
       },
     ],
-    relatedModules: ['finance-accounting', 'project-management', 'workflow-automation'],
+    relatedModules: ['finance-accounting', 'project-management', 'workflow-automation', 'reporting-analytics'],
     integrations: ['Biometric attendance devices', 'Bank payment files', 'Email and calendar', 'Single sign-on providers', 'Document e-signature tools'],
     faqs: [
       {

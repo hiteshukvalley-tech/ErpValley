@@ -1,7 +1,7 @@
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
-import { footerColumns, legalLinks, mainNav, pageRegistry } from '@/config/navigation'
+import { activeMenuIndex, footerColumns, legalLinks, mainNav, pageRegistry } from '@/config/navigation'
 import { renderAt, settled } from './utils'
 
 describe('header navigation', () => {
@@ -25,6 +25,17 @@ describe('header navigation', () => {
     await user.keyboard('{Escape}')
     expect(trigger).toHaveAttribute('aria-expanded', 'false')
     expect(trigger).toHaveFocus()
+  })
+
+  it('places the open panel right after its trigger, so Tab moves straight into it', async () => {
+    const user = userEvent.setup()
+    await renderAt('/')
+    const trigger = screen.getByRole('button', { name: 'Industries' })
+    await user.click(trigger)
+    const panel = document.getElementById(trigger.getAttribute('aria-controls')!)!
+    expect(trigger.parentElement!.contains(panel)).toBe(true)
+    await user.tab()
+    expect(panel.contains(document.activeElement)).toBe(true)
   })
 
   it('navigates from a dropdown link and closes the menu', async () => {
@@ -51,6 +62,33 @@ describe('header navigation', () => {
     expect(within(dialog).getByRole('link', { name: 'Data Migration' })).toBeInTheDocument()
     await user.keyboard('{Escape}')
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
+})
+
+describe('current section marker', () => {
+  it.each([
+    ['/products/crm', 'Products'],
+    ['/products/compare', 'Products'],
+    ['/pricing', 'Solutions'],
+    ['/industries/healthcare', 'Industries'],
+    ['/services/data-migration/', 'Services'],
+    ['/blog', 'Resources'],
+    ['/about', 'Company'],
+  ])('%s belongs to the %s menu', (path, label) => {
+    expect(mainNav[activeMenuIndex(path)].label).toBe(label)
+  })
+
+  it('marks no menu on the homepage', () => {
+    expect(activeMenuIndex('/')).toBe(-1)
+  })
+
+  it('renders the mobile menu over the whole page, outside the header', async () => {
+    const user = userEvent.setup()
+    await renderAt('/services/data-migration')
+    await user.click(screen.getByRole('button', { name: 'Open menu' }))
+    const dialog = screen.getByRole('dialog', { name: 'Site menu' })
+    expect(dialog.closest('header')).toBeNull()
+    expect(within(dialog).getByRole('button', { name: /Services.*current section/ })).toHaveAttribute('aria-expanded', 'false')
   })
 })
 

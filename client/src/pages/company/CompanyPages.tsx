@@ -19,13 +19,16 @@ import {
 } from '@/content/company'
 import { securityPoints } from '@/content/home'
 import type { EngagementModel } from '@/content/types'
+import { photos } from '@/content/photos'
 import { usePageMeta } from '@/hooks/usePageMeta'
+import { fillLastRowMd, fillLastRowSm } from '@/utils/grid'
 
 export function AboutPage() {
   usePageMeta('About ERPVALLEY', 'ERPVALLEY builds and implements a modular ERP platform, with custom development, integrations and long-term support for growing businesses.')
   return (
     <>
       <PageHero
+        image={photos.officeFloor}
         eyebrow="About ERPVALLEY"
         title="We help businesses run on one connected system"
         description={about.mission}
@@ -42,7 +45,7 @@ export function AboutPage() {
         <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr]">
           <div>
             <SectionHeader id="story-title" align="left" eyebrow="Our story" title="Why ERPVALLEY exists" />
-            <figure className="mt-8 rounded-card border border-line bg-bg-alt p-6">
+            <figure className="card-hover mt-8 rounded-card border border-line bg-bg-alt p-6">
               <Quote className="size-6 text-link" aria-hidden />
               <blockquote className="mt-3 font-display text-lg font-semibold leading-snug text-fg">{about.mission}</blockquote>
               <figcaption className="mt-3 text-sm text-fg-muted">Our mission</figcaption>
@@ -82,6 +85,7 @@ export function ProcessPage() {
   return (
     <>
       <PageHero
+        image={photos.teamTraining}
         eyebrow="Our process"
         title="Six stages from first call to go-live"
         description="Every stage has clear activities and agreed deliverables, so you always know what is happening and what comes next."
@@ -92,7 +96,7 @@ export function ProcessPage() {
           {processStages.map((stage, i) => (
             <li key={stage.title}>
               <Reveal>
-                <article className="grid gap-6 rounded-card border border-line bg-surface p-6 shadow-card sm:p-8 lg:grid-cols-[1.2fr_1fr_1fr]">
+                <article className="card-hover grid gap-6 rounded-card border border-line bg-surface p-6 shadow-card sm:p-8 lg:grid-cols-[1.2fr_1fr_1fr]">
                   <div>
                     <div className="flex items-center gap-3">
                       <span className="inline-flex size-11 items-center justify-center rounded-xl bg-primary text-white">
@@ -138,18 +142,19 @@ export function TechnologyPage() {
   return (
     <>
       <PageHero
+        image={photos.engineerDatacenter}
         eyebrow="Technology stack"
         title="Proven technology, chosen for the long term"
         description="We use widely adopted, well-supported tools so your system stays maintainable, secure and easy to extend."
       />
       <Section aria-label="Technology groups">
-        <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <ul className={`grid gap-5 md:grid-cols-2 lg:grid-cols-3 ${fillLastRowMd}`}>
           {techGroups.map((g, i) => (
             <li key={g.title}>
               <Reveal delay={(i % 3) * 70} className="h-full">
-                <div className="h-full rounded-card border border-line bg-surface p-6 shadow-card">
+                <div className="card-hover h-full rounded-card border border-line bg-surface p-6 shadow-card">
                   <div className="flex items-center gap-3">
-                    <span className="inline-flex size-10 items-center justify-center rounded-lg bg-primary-soft text-link">
+                    <span className="card-icon inline-flex size-10 items-center justify-center rounded-lg bg-primary-soft text-link">
                       <g.icon className="size-5" aria-hidden />
                     </span>
                     <h2 className="text-lg font-bold">{g.title}</h2>
@@ -171,9 +176,9 @@ export function TechnologyPage() {
       </Section>
       <Section tone="alt" aria-labelledby="security-title">
         <SectionHeader id="security-title" eyebrow="Security practices" title="Built in from the start" />
-        <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className={`mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 ${fillLastRowSm}`}>
           {securityPoints.map((p) => (
-            <li key={p.title} className="flex items-center gap-3 rounded-card border border-line bg-surface p-5 text-sm font-medium text-fg shadow-card">
+            <li key={p.title} className="card-hover flex items-center gap-3 rounded-card border border-line bg-surface p-5 text-sm font-medium text-fg shadow-card">
               <p.icon className="size-5 shrink-0 text-link" aria-hidden />
               {p.title}
             </li>
@@ -190,7 +195,8 @@ export function ValuesPage() {
   return (
     <>
       <PageHero eyebrow="Company values" title="What we stand for" description="Values only matter if they change how we work. Here is how each one shows up in our projects." />
-      <Section aria-label="Values">
+      <Section aria-labelledby="values-title">
+        <h2 id="values-title" className="sr-only">Our values</h2>
         <IconGrid items={values} columns={3} />
       </Section>
       <CtaBand title="Work with a team that cares" text="See how our values translate into a clear, well-run project for your business." />
@@ -210,6 +216,7 @@ export function PartnersPage() {
   return (
     <>
       <PageHero
+        image={photos.handshake}
         eyebrow="Partners"
         title="Grow with ERPVALLEY"
         description="We work with technology companies, consultancies and resellers who want to offer their clients a modern ERP and the services around it."
@@ -237,6 +244,7 @@ export function CareersPage() {
   return (
     <>
       <PageHero
+        image={photos.teamSuccess}
         eyebrow="Careers"
         title="Build the systems businesses run on"
         description="We are always interested in hearing from developers, consultants, designers and QA engineers who care about doing careful, useful work."
@@ -276,7 +284,7 @@ export function EngagementModelCards({ models }: { models: EngagementModel[] }) 
       {models.map((m, i) => (
         <li key={m.name}>
           <Reveal delay={i * 80} className="h-full">
-            <div className="flex h-full flex-col rounded-card border border-line bg-surface p-6 shadow-card">
+            <div className="card-hover flex h-full flex-col rounded-card border border-line bg-surface p-6 shadow-card">
               <span className="inline-flex size-11 items-center justify-center rounded-xl bg-primary text-white">
                 <m.icon className="size-5" aria-hidden />
               </span>
@@ -309,7 +317,8 @@ export function EngagementModelsPage() {
         description="Choose a fixed scope, a dedicated team or time and materials. We will recommend the best fit after discovery."
         actions={<Button to="/request-quote" size="lg">Request a Quote <ArrowRight className="size-4" aria-hidden /></Button>}
       />
-      <Section aria-label="Engagement models">
+      <Section aria-labelledby="models-list-title">
+        <h2 id="models-list-title" className="sr-only">Engagement models</h2>
         <EngagementModelCards models={engagementModels} />
       </Section>
       <CtaBand title="Not sure which model fits?" text="Describe your project and we will recommend an engagement model with a scoped estimate." primary={{ label: 'Request a Quote', to: '/request-quote' }} secondary={{ label: 'Hire developers', to: '/hire-developers' }} />

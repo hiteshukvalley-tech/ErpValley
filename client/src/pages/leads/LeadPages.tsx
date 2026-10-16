@@ -6,13 +6,14 @@ import { Steps } from '@/components/common/Steps'
 import { LeadForm, type FieldDef } from '@/components/forms/LeadForm'
 import { Card } from '@/components/ui/Card'
 import { Section } from '@/components/ui/Section'
-import { COMPANY_SIZES, CONTACT_TOPICS, TIMELINES } from '@/config/forms'
+import { COMPANY_SIZES, CONTACT_TOPICS, DEMO_TIMES, TIMELINES } from '@/config/forms'
 import { siteConfig } from '@/config/site'
 import type { TextItem } from '@/content/types'
+import { photos } from '@/content/photos'
 import { usePageMeta } from '@/hooks/usePageMeta'
 import { useContent } from '@/services/content'
 
-/* Contact, Book a Demo and Request a Quote. Submissions are stored by the API (POST /api/leads/:type). */
+/* Contact, Book a Demo and Request a Quote. Submissions are emailed to the team through Web3Forms (services/forms.ts). */
 
 const name: FieldDef = { name: 'name', label: 'Full name', kind: 'text', required: true, half: true, autoComplete: 'name', maxLength: 100, message: 'Enter your name' }
 const email: FieldDef = { name: 'email', label: 'Work email', kind: 'email', required: true, half: true, autoComplete: 'email', maxLength: 254, placeholder: 'you@company.com' }
@@ -29,13 +30,19 @@ const company = (required: boolean): FieldDef => ({
 })
 const companySize: FieldDef = { name: 'companySize', label: 'Company size (employees)', kind: 'select', required: true, half: true, options: COMPANY_SIZES, message: 'Choose your company size' }
 
+/** Module choices, plus an option for visitors who want a recommendation instead of picking themselves. */
+const moduleOptions = (products: { slug: string; name: string }[]) => [
+  ...products.map((p) => ({ value: p.slug, label: p.name })),
+  { value: 'not-sure', label: 'Not sure yet, recommend modules for me' },
+]
+
 /** Two-column layout: the form card and a side panel. */
 function FormLayout({ form, aside }: { form: ReactNode; aside: ReactNode }) {
   return (
     <Section tone="alt">
       <div className="grid items-start gap-10 lg:grid-cols-[1.5fr_1fr]">
         <Card className="p-6 sm:p-8">{form}</Card>
-        <aside className="space-y-8">{aside}</aside>
+        <div className="space-y-8">{aside}</div>
       </div>
     </Section>
   )
@@ -112,11 +119,11 @@ export function ContactPage() {
   ]
   return (
     <>
-      <PageHero eyebrow="Contact" title="Talk to the ERPVALLEY team" description="Questions about our ERP products, services or a project? Send us a message and we will reply by email." />
+      <PageHero image={photos.salesTeamScreen} eyebrow="Contact" title="Talk to the ERPVALLEY team" description="Questions about our ERP products, services or a project? Send us a message and we will reply by email." />
       <FormLayout
         form={
           <LeadForm
-            endpoint="/leads/contact"
+            formName="Contact message"
             fields={fields}
             submitLabel="Send message"
             successTitle={(n) => (n ? `Thank you, ${n}` : 'Thank you')}
@@ -155,16 +162,17 @@ export function BookDemoPage() {
     company(true),
     companySize,
     phone,
-    { name: 'modules', label: 'Modules you are interested in', kind: 'checkboxes', options: products.map((p) => ({ value: p.slug, label: p.name })) },
+    { name: 'demoTime', label: 'Preferred time for the demo', kind: 'select', half: true, options: DEMO_TIMES },
+    { name: 'modules', label: 'Modules you are interested in', kind: 'checkboxes', options: moduleOptions(products) },
     { name: 'message', label: 'Anything we should prepare?', kind: 'textarea', maxLength: 4000, placeholder: 'Your current tools, the processes you want to improve, questions for the demo…' },
   ]
   return (
     <>
-      <PageHero eyebrow="Book a demo" title="See ERPVALLEY working with your processes" description="Tell us about your business and the modules you are interested in. We will arrange a demo built around your own examples." />
+      <PageHero image={photos.analyticsScreen} eyebrow="Book a demo" title="See ERPVALLEY working with your processes" description="Tell us about your business and the modules you are interested in. We will arrange a demo built around your own examples." />
       <FormLayout
         form={
           <LeadForm
-            endpoint="/leads/demo"
+            formName="Demo request"
             fields={fields}
             initial={{ modules }}
             submitLabel="Request my demo"
@@ -201,7 +209,7 @@ export function RequestQuotePage() {
     companySize,
     phone,
     { name: 'timeline', label: 'When do you want to start?', kind: 'select', required: true, half: true, options: TIMELINES, message: 'Choose a timeline' },
-    { name: 'modules', label: 'ERP modules', kind: 'checkboxes', options: products.map((p) => ({ value: p.slug, label: p.name })) },
+    { name: 'modules', label: 'ERP modules', kind: 'checkboxes', options: moduleOptions(products) },
     { name: 'services', label: 'Services', kind: 'checkboxes', options: services.map((s) => ({ value: s.slug, label: s.name })) },
     {
       name: 'message',
@@ -216,11 +224,11 @@ export function RequestQuotePage() {
   ]
   return (
     <>
-      <PageHero eyebrow="Request a quote" title="Get a quote scoped to your business" description="Every business needs a different mix of modules and services. Tell us what you need and we will prepare a written proposal." />
+      <PageHero image={photos.deskPayments} eyebrow="Request a quote" title="Get a quote scoped to your business" description="Every business needs a different mix of modules and services. Tell us what you need and we will prepare a written proposal." />
       <FormLayout
         form={
           <LeadForm
-            endpoint="/leads/quote"
+            formName="Quote request"
             fields={fields}
             initial={{ modules, services: chosenServices }}
             submitLabel="Request my quote"

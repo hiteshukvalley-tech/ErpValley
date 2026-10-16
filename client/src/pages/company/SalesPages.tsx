@@ -26,17 +26,19 @@ import {
 } from '@/content/company'
 import { homeFaqs } from '@/content/home'
 import type { DeveloperRole } from '@/content/types'
+import { photos } from '@/content/photos'
 import { usePageMeta } from '@/hooks/usePageMeta'
 import { EngagementModelCards } from './CompanyPages'
+import { fillLastRowSm } from '@/utils/grid'
 
 function RoleCards({ roles }: { roles: DeveloperRole[] }) {
   return (
-    <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <ul className={`grid gap-5 sm:grid-cols-2 lg:grid-cols-3 ${fillLastRowSm}`}>
       {roles.map((r, i) => (
         <li key={r.title}>
           <Reveal delay={(i % 3) * 70} className="h-full">
-            <div className="h-full rounded-card border border-line bg-surface p-6 shadow-card">
-              <span className="inline-flex size-11 items-center justify-center rounded-xl bg-primary-soft text-link">
+            <div className="card-hover h-full rounded-card border border-line bg-surface p-6 shadow-card">
+              <span className="card-icon inline-flex size-11 items-center justify-center rounded-xl bg-primary-soft text-link">
                 <r.icon className="size-5" aria-hidden />
               </span>
               <h3 className="mt-4 text-lg font-bold">{r.title}</h3>
@@ -59,6 +61,7 @@ export function HireDevelopersPage() {
   return (
     <>
       <PageHero
+        image={photos.developerDesk}
         eyebrow="Hire developers"
         title="Dedicated developers for your ERP and web projects"
         description="Add experienced React, Node.js and ERP specialists to your team, full-time or part-time, with a clear onboarding plan."
@@ -94,7 +97,7 @@ export function HireDevelopersPage() {
           <SectionHeader id="onboard-title" align="left" eyebrow="Onboarding" title="A smooth start, not a slow ramp-up" />
           <ol className="grid gap-4 sm:grid-cols-2">
             {hireOnboarding.map((s, i) => (
-              <li key={s.title} className="rounded-card border border-line bg-surface p-5 shadow-card">
+              <li key={s.title} className="card-hover rounded-card border border-line bg-surface p-5 shadow-card">
                 <span className="font-display text-sm font-bold text-link">Step {i + 1}</span>
                 <h3 className="mt-2 font-bold">{s.title}</h3>
                 <p className="mt-1 text-sm leading-relaxed text-fg-muted">{s.text}</p>
@@ -124,7 +127,8 @@ export function DevelopersPage() {
         description="Browse the roles we staff and the skills each brings. We share individual profiles matched to your requirements on request."
         actions={<Button to="/hire-developers" size="lg">How hiring works <ArrowRight className="size-4" aria-hidden /></Button>}
       />
-      <Section aria-label="Developer roles">
+      <Section aria-labelledby="dev-roles-title">
+        <h2 id="dev-roles-title" className="sr-only">Developer roles</h2>
         <RoleCards roles={developerRoles} />
       </Section>
       <Section tone="alt" aria-label="Individual profiles">
@@ -144,6 +148,7 @@ export function PricingPage() {
   return (
     <>
       <PageHero
+        image={photos.financePaperwork}
         eyebrow="Pricing"
         title="Pricing tailored to your business"
         description="Every business needs a different mix of modules, users and services, so we quote each project individually. Here is how pricing works."
@@ -164,7 +169,7 @@ export function PricingPage() {
       </Section>
       <Section tone="alt" aria-labelledby="included-title">
         <div className="grid gap-8 lg:grid-cols-2">
-          <div className="self-start rounded-card border border-link bg-surface p-6 shadow-card ring-1 ring-link sm:p-8">
+          <div className="card-hover self-start rounded-card border border-link bg-surface p-6 shadow-card ring-1 ring-link sm:p-8">
             <span className="inline-flex size-11 items-center justify-center rounded-xl bg-primary text-white">
               <CircleDollarSign className="size-5" aria-hidden />
             </span>
@@ -184,7 +189,7 @@ export function PricingPage() {
             <h2 className="text-2xl font-bold">Optional add-ons</h2>
             <ul className="mt-6 space-y-3">
               {pricingAddons.map((a) => (
-                <li key={a.name} className="flex gap-3 rounded-xl border border-line bg-surface p-4">
+                <li key={a.name} className="card-hover flex gap-3 rounded-xl border border-line bg-surface p-4">
                   <Plus className="mt-0.5 size-4 shrink-0 text-link" aria-hidden />
                   <div>
                     <p className="font-semibold text-fg">{a.name}</p>
@@ -205,7 +210,7 @@ export function PricingPage() {
         </div>
         <ul className="mt-10 grid gap-5 sm:grid-cols-2">
           {implementationConsiderations.map((c, i) => (
-            <li key={c.title} className="rounded-card border border-line bg-surface p-6 shadow-card">
+            <li key={c.title} className="card-hover rounded-card border border-line bg-surface p-6 shadow-card">
               <span className="font-display text-sm font-bold text-link">0{i + 1}</span>
               <h3 className="mt-2 font-bold">{c.title}</h3>
               <p className="mt-1.5 text-sm leading-relaxed text-fg-muted">{c.text}</p>

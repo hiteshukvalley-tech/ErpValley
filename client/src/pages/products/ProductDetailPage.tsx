@@ -6,11 +6,13 @@ import { DetailHero } from '@/components/common/DetailHero'
 import { FaqSection } from '@/components/common/FaqSection'
 import { IconGrid } from '@/components/common/IconGrid'
 import { LinkCards } from '@/components/common/LinkCards'
+import { ProblemSolution } from '@/components/common/ProblemSolution'
 import { DataScreenPreview } from '@/components/mockups/DataScreenPreview'
 import { ModulePreview } from '@/components/mockups/ModulePreview'
 import { Button } from '@/components/ui/Button'
 import { Reveal } from '@/components/ui/Reveal'
 import { Section, SectionHeader } from '@/components/ui/Section'
+import { productStories } from '@/content/photos'
 import type { ProductContent } from '@/content/types'
 import { usePageMeta } from '@/hooks/usePageMeta'
 import { bySlug, useContent } from '@/services/content'
@@ -61,14 +63,16 @@ function ProductView({ product: p }: { product: ProductContent }) {
         }
       />
 
-      <Section aria-labelledby="benefits-title">
+      <ProblemSolution story={productStories[p.slug]} title={`What ${p.name} fixes`} />
+
+      <Section tone="alt" aria-labelledby="benefits-title">
         <SectionHeader id="benefits-title" eyebrow="Business benefits" title={`Why teams choose ERPVALLEY ${p.name}`} />
         <div className="mt-12">
           <IconGrid items={p.benefits} columns={4} variant="plain" />
         </div>
       </Section>
 
-      <Section tone="alt" aria-labelledby="features-title">
+      <Section aria-labelledby="features-title">
         <SectionHeader
           id="features-title"
           eyebrow="Features and capabilities"
@@ -81,7 +85,7 @@ function ProductView({ product: p }: { product: ProductContent }) {
         <div className="mt-6 grid gap-5 md:grid-cols-3">
           {p.capabilityGroups.map((g) => (
             <Reveal key={g.title} className="h-full">
-              <div className="h-full rounded-card border border-line bg-surface p-6">
+              <div className="card-hover h-full rounded-card border border-line bg-surface p-6 shadow-card">
                 <h3 className="text-base font-bold">{g.title}</h3>
                 <ul className="mt-4 space-y-2.5">
                   {g.items.map((item) => (
@@ -97,7 +101,7 @@ function ProductView({ product: p }: { product: ProductContent }) {
         </div>
       </Section>
 
-      <Section aria-labelledby="connect-title">
+      <Section tone="alt" aria-labelledby="connect-title">
         <div className="grid gap-12 lg:grid-cols-[1.5fr_1fr]">
           <div>
             <SectionHeader
@@ -111,7 +115,7 @@ function ProductView({ product: p }: { product: ProductContent }) {
               <LinkCards items={related} columns={2} />
             </div>
           </div>
-          <div className="rounded-3xl border border-line bg-bg-alt p-6 sm:p-8">
+          <div className="card-hover rounded-3xl border border-line bg-surface p-6 shadow-card sm:p-8">
             <h3 className="text-lg font-bold">Connects with</h3>
             <p className="mt-2 text-sm text-fg-muted">Through the ERPVALLEY REST API, webhooks and our integration services.</p>
             <Chips items={p.integrations} className="mt-5" />
@@ -128,7 +132,7 @@ function ProductView({ product: p }: { product: ProductContent }) {
           {p.useCases.map((u, i) => (
             <li key={u.title}>
               <Reveal delay={i * 80} className="h-full">
-                <div className="h-full rounded-card border border-line-dark bg-white/[0.03] p-6">
+                <div className="card-hover h-full rounded-card border border-line-dark bg-white/[0.03] p-6 hover:bg-white/[0.06]">
                   <span className="font-display text-sm font-bold text-logo-blue">0{i + 1}</span>
                   <h3 className="mt-3 text-lg font-bold text-white">{u.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-mist">{u.text}</p>

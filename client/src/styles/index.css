@@ -50,8 +50,8 @@
   --primary: var(--ev-electric);
   --primary-hover: #2a72ff;
   --primary-soft: rgb(39 136 255 / 0.14);
-  /* Logo blue keeps text links readable (≈5:1) on midnight navy. */
-  --link: var(--ev-logo-blue);
+  /* Lighter than logo blue so links and blue labels stay readable (>= 5:1) on navy and on tinted blue boxes. */
+  --link: #5aa5ff;
   --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.25);
   --shadow-pop: 0 16px 48px rgb(0 0 0 / 0.45);
   color-scheme: dark;
@@ -132,6 +132,91 @@
       radial-gradient(60rem 30rem at 80% -10%, rgb(39 136 255 / 0.35), transparent 60%),
       radial-gradient(40rem 24rem at 0% 110%, rgb(11 92 255 / 0.25), transparent 60%),
       linear-gradient(180deg, var(--ev-midnight), var(--ev-navy));
+  }
+}
+
+/*
+ * Hover effects. Use these instead of one-off hover classes so every card behaves the same.
+ *   card-link   the whole card is a link: lifts, blue border, stronger shadow.
+ *   card-hover  an information card (not clickable): border and shadow only, no lift, so it never looks like a link.
+ *   card-icon   icon chip inside either card: turns solid blue while the card is hovered.
+ *   card-photo  photo inside either card: zooms in slightly while the card is hovered.
+ * Hover styles apply only on devices with a real pointer, and movement is skipped for reduced-motion users.
+ */
+@utility card-link {
+  transition-property: translate, box-shadow, border-color, background-color;
+  transition-duration: 200ms;
+  transition-timing-function: ease-out;
+  @media (hover: hover) {
+    &:hover {
+      border-color: color-mix(in srgb, var(--link) 55%, transparent);
+      box-shadow: var(--shadow-pop);
+    }
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    &:hover {
+      translate: 0 -4px;
+    }
+    &:active {
+      translate: 0 -1px;
+    }
+  }
+}
+
+@utility card-hover {
+  transition-property: box-shadow, border-color, background-color;
+  transition-duration: 200ms;
+  transition-timing-function: ease-out;
+  @media (hover: hover) {
+    &:hover {
+      border-color: color-mix(in srgb, var(--link) 40%, transparent);
+      box-shadow: var(--shadow-pop);
+    }
+  }
+}
+
+@utility card-icon {
+  transition-property: background-color, color, box-shadow;
+  transition-duration: 200ms;
+}
+
+@utility card-photo {
+  transition: scale 500ms ease-out;
+}
+
+@media (hover: hover) {
+  :is(.card-link, .card-hover):hover .card-icon {
+    background-color: var(--primary);
+    color: #fff;
+  }
+  /* Arrows in links and buttons slide in the direction they point. */
+  :is(a, button):hover .lucide-arrow-right {
+    translate: 3px 0;
+  }
+  :is(a, button):hover .lucide-arrow-up-right {
+    translate: 2px -2px;
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  :is(.card-link, .card-hover):hover .card-photo {
+    scale: 1.05;
+  }
+}
+
+:is(a, button) :is(.lucide-arrow-right, .lucide-arrow-up-right) {
+  transition: translate 150ms ease-out;
+}
+
+/* Mega menu panel entrance: a short fade and drop. */
+@keyframes ev-menu {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 

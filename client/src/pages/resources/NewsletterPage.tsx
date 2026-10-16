@@ -1,12 +1,13 @@
 import { BookOpen, CalendarClock, CheckCircle2, Mail, Newspaper } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { PageHero } from '@/components/common/PageHero'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Section } from '@/components/ui/Section'
 import { usePageMeta } from '@/hooks/usePageMeta'
-import { ApiError, postApi } from '@/services/api'
+import { attributionEmailFields, trackFormSubmit } from '@/services/analytics'
+import { FormError, submitForm } from '@/services/forms'
 
 const perks = [
   { icon: Newspaper, text: 'New articles and ERP guides' },
@@ -14,11 +15,13 @@ const perks = [
   { icon: CalendarClock, text: 'Product updates and upcoming webinars' },
 ]
 
-/** Newsletter signup, stored by the API (POST /api/newsletter). */
+/** Newsletter signup, emailed to the team through Web3Forms (services/forms.ts). */
 export function NewsletterPage() {
   usePageMeta('Newsletter', 'Subscribe to the ERPVALLEY newsletter for ERP guides, practical checklists and product updates, sent about once a month.')
   const [params] = useSearchParams()
-  const [email, setEmail] = useState(params.get('email') ?? '')
+  // The footer form passes the address in router state, so it never appears in the URL (or in analytics).
+  const fromFooter = (useLocation().state as { email?: string } | null)?.email
+  const [email, setEmail] = useState(fromFooter ?? params.get('email') ?? '')
   const [consent, setConsent] = useState(false)
   const [error, setError] = useState('')
   const [honeypot, setHoneypot] = useState('')
@@ -32,12 +35,21 @@ export function NewsletterPage() {
     setError('')
     setState('sending')
     try {
-      await postApi('/newsletter', { email: email.trim(), consent, website: honeypot, page: '/newsletter' })
+      await submitForm({
+        subject: 'Newsletter signup',
+        values: { Form: 'Newsletter signup', Email: email.trim(), Consent: 'Agreed to receive emails', ...attributionEmailFields() },
+        replyTo: email,
+        honeypot,
+      })
+      if (!honeypot) trackFormSubmit('Newsletter signup')
       setState('sent')
     } catch (err) {
       setState('idle')
-      const known = err instanceof ApiError && [400, 429, 503].includes(err.status)
-      setError(known ? (err.issues.email?.[0] ?? err.message) : 'We could not subscribe you right now. Please try again in a few minutes.')
+      setError(
+        err instanceof FormError && err.kind === 'not-configured'
+          ? 'Newsletter signup is not connected yet, so you were not subscribed. Please try again later.'
+          : 'We could not subscribe you right now. Please check your connection and try again in a few minutes.',
+      )
     }
   }
 

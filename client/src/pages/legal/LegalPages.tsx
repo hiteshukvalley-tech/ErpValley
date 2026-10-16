@@ -55,7 +55,7 @@ export const PrivacyPage = () => (
   <LegalDocument doc={privacyPolicy} metaDescription="How ERPVALLEY collects, uses, stores and protects personal information submitted through this website, and the rights you have over your data." />
 )
 export const TermsPage = () => (
-  <LegalDocument doc={termsOfService} metaDescription="The terms and conditions that govern use of the ERPVALLEY website, customer accounts, quotes and the services we provide." />
+  <LegalDocument doc={termsOfService} metaDescription="The terms and conditions that govern use of the ERPVALLEY website, its forms, quotes and the services we provide." />
 )
 export const CookiesPage = () => (
   <LegalDocument doc={cookiePolicy} metaDescription="Which cookies and browser storage the ERPVALLEY website uses, why we use them, and how you can control them." />

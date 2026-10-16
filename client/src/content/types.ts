@@ -3,7 +3,6 @@ import type { PreviewKind } from './home'
 
 /*
  * Content shapes for product, industry and service pages.
- * These mirror the Mongoose models planned for Step 5, so the content can move to MongoDB unchanged.
  * Rule for all content: no invented customers, statistics, ratings, certifications or awards.
  */
 
@@ -137,7 +136,7 @@ export interface ServiceContent {
   faqs: Faq[] // exactly 4
 }
 
-/* ---------- Step 4: company, resources, legal ---------- */
+/* ---------- Company, resources, legal ---------- */
 
 export type PostCategory = 'ERP Basics' | 'Implementation' | 'Operations' | 'Finance' | 'Technology'
 

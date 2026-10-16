@@ -1,4 +1,4 @@
-import { ArrowRight, ChevronRight, GitCompare } from 'lucide-react'
+import { ArrowRight, Check, ChevronRight, GitCompare } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { CtaBand } from '@/components/common/CtaBand'
 import { PageHero } from '@/components/common/PageHero'
@@ -6,8 +6,10 @@ import { Button } from '@/components/ui/Button'
 import { Reveal } from '@/components/ui/Reveal'
 import { Section, SectionHeader } from '@/components/ui/Section'
 import type { ProductCategory, ProductSlug } from '@/content/types'
+import { photos } from '@/content/photos'
 import { usePageMeta } from '@/hooks/usePageMeta'
 import { bySlug, useContent } from '@/services/content'
+import { cn } from '@/utils/cn'
 
 const categories: ProductCategory[] = [
   'Platform',
@@ -32,6 +34,7 @@ export function ProductsOverviewPage() {
   return (
     <>
       <PageHero
+        image={photos.dashboardLaptop}
         eyebrow="Products"
         title="One platform. Every module your business needs."
         description="ERPVALLEY modules share one database, so a sale, a purchase or a payroll run updates everything it touches. Start with what you need and add more as you grow."
@@ -61,7 +64,7 @@ export function ProductsOverviewPage() {
               <li key={slug} className="flex flex-1 flex-col items-center gap-3 lg:flex-row">
                 <Link
                   to={`/products/${slug}`}
-                  className="flex w-full flex-1 items-center gap-3 rounded-card border border-line bg-surface p-4 shadow-card transition hover:border-link/50 lg:flex-col lg:text-center"
+                  className="flex w-full flex-1 items-center gap-3 rounded-card border border-line bg-surface p-4 shadow-card card-link lg:flex-col lg:text-center"
                 >
                   <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-white">
                     <p.icon className="size-5" aria-hidden />
@@ -88,30 +91,52 @@ export function ProductsOverviewPage() {
             <div className="grid gap-8 lg:grid-cols-[16rem_1fr]">
               <h2 className="text-2xl font-bold">{cat}</h2>
               <ul className="grid gap-4 sm:grid-cols-2">
-                {items.map((p, i) => (
-                  <li key={p.slug}>
-                    <Reveal delay={(i % 2) * 60} className="h-full">
-                      <Link
-                        to={`/products/${p.slug}`}
-                        className="group flex h-full flex-col rounded-card border border-line bg-surface p-6 shadow-card transition duration-200 hover:-translate-y-0.5 hover:border-link/50 hover:shadow-pop"
-                      >
-                        <div className="flex items-center gap-3">
-                          <span className="inline-flex size-11 items-center justify-center rounded-xl bg-primary-soft text-link transition-colors group-hover:bg-primary group-hover:text-white">
-                            <p.icon className="size-5" aria-hidden />
-                          </span>
-                          <h3 className="text-lg font-bold">{p.name}</h3>
-                        </div>
-                        <p className="mt-3 flex-1 text-sm leading-relaxed text-fg-muted">{p.summary}</p>
-                        <p className="mt-4 text-xs text-fg-muted">
-                          <span className="font-semibold text-fg">Typical users:</span> {p.typicalUsers}
-                        </p>
-                        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-link">
-                          Explore {p.name} <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
-                        </span>
-                      </Link>
-                    </Reveal>
-                  </li>
-                ))}
+                {items.map((p, i) => {
+                  // A card alone on the last row spans the full width and lists key features, so no gap is left.
+                  const wide = items.length % 2 === 1 && i === items.length - 1
+                  return (
+                    <li key={p.slug} className={cn(wide && 'sm:col-span-2')}>
+                      <Reveal delay={(i % 2) * 60} className="h-full">
+                        <Link
+                          to={`/products/${p.slug}`}
+                          className={cn(
+                            'group flex h-full flex-col rounded-card border border-line bg-surface p-6 shadow-card card-link',
+                            wide && 'md:grid md:grid-cols-[1.2fr_1fr] md:gap-8',
+                          )}
+                        >
+                          <div className="flex flex-col">
+                            <div className="flex items-center gap-3">
+                              <span className="inline-flex size-11 items-center justify-center rounded-xl card-icon bg-primary-soft text-link">
+                                <p.icon className="size-5" aria-hidden />
+                              </span>
+                              <h3 className="text-lg font-bold">{p.name}</h3>
+                            </div>
+                            <p className="mt-3 flex-1 text-sm leading-relaxed text-fg-muted">{p.summary}</p>
+                            <p className="mt-4 text-xs text-fg-muted">
+                              <span className="font-semibold text-fg">Typical users:</span> {p.typicalUsers}
+                            </p>
+                            <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-link">
+                              Explore {p.name} <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                            </span>
+                          </div>
+                          {wide && (
+                            <div className="mt-6 rounded-xl bg-bg-alt p-5 md:mt-0">
+                              <p className="text-xs font-semibold uppercase tracking-wider text-fg-muted">Key features</p>
+                              <ul className="mt-3 grid gap-2.5 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
+                                {p.features.map((f) => (
+                                  <li key={f.title} className="flex items-start gap-2 text-sm text-fg">
+                                    <Check className="mt-0.5 size-4 shrink-0 text-link" aria-hidden />
+                                    {f.title}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </Link>
+                      </Reveal>
+                    </li>
+                  )
+                })}
               </ul>
             </div>
           </Section>

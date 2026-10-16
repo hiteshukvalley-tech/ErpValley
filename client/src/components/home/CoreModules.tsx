@@ -32,7 +32,7 @@ export function CoreModules() {
             <Reveal delay={(i % 6) * 50} className="h-full">
               <Link
                 to={m.to}
-                className="group flex h-full flex-col items-center rounded-2xl p-4 text-center transition duration-200 hover:-translate-y-1 hover:bg-surface hover:shadow-pop"
+                className="group flex h-full flex-col items-center rounded-2xl border border-transparent p-4 text-center card-link hover:bg-surface"
               >
                 <span
                   className={`inline-flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br ${tones[i % tones.length]} text-white shadow-[0_10px_24px_-10px_rgb(11_92_255/0.7)] transition-transform group-hover:scale-105`}

@@ -1,6 +1,7 @@
 import { Reveal } from '@/components/ui/Reveal'
 import type { IconItem } from '@/content/types'
 import { cn } from '@/utils/cn'
+import { fillLastRowSm } from '@/utils/grid'
 
 interface IconGridProps {
   items: IconItem[]
@@ -9,7 +10,7 @@ interface IconGridProps {
   variant?: 'card' | 'plain' | 'accent'
 }
 
-const colClass = { 2: 'sm:grid-cols-2', 3: 'sm:grid-cols-2 lg:grid-cols-3', 4: 'sm:grid-cols-2 lg:grid-cols-4' }
+const colClass = { 2: 'sm:grid-cols-2', 3: `sm:grid-cols-2 lg:grid-cols-3 ${fillLastRowSm}`, 4: 'sm:grid-cols-2 lg:grid-cols-4' }
 
 export function IconGrid({ items, columns = 3, variant = 'card' }: IconGridProps) {
   return (
@@ -20,14 +21,14 @@ export function IconGrid({ items, columns = 3, variant = 'card' }: IconGridProps
             <div
               className={cn(
                 'h-full',
-                variant !== 'plain' && 'rounded-card border border-line bg-surface p-6 shadow-card',
+                variant !== 'plain' && 'card-hover rounded-card border border-line bg-surface p-6 shadow-card',
                 variant === 'plain' && 'flex gap-4',
               )}
             >
               <span
                 className={cn(
                   'inline-flex size-11 shrink-0 items-center justify-center rounded-xl',
-                  variant === 'accent' ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400' : 'bg-primary-soft text-link',
+                  variant === 'accent' ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400' : 'card-icon bg-primary-soft text-link',
                 )}
               >
                 <item.icon className="size-5" aria-hidden />

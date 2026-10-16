@@ -1,7 +1,7 @@
 import { createBrowserRouter, type RouteObject } from 'react-router-dom'
 import { PublicLayout } from '@/layouts/PublicLayout'
 import { HomePage } from '@/pages/HomePage'
-import { RegistryPage } from '@/pages/RegistryPage'
+import { NotFoundPage } from '@/pages/NotFoundPage'
 import { ServerErrorPage } from '@/pages/ServerErrorPage'
 import { contentLoader } from '@/services/content'
 import { searchLoader } from '@/services/search'
@@ -9,7 +9,7 @@ import { searchLoader } from '@/services/search'
 /*
  * The homepage, layout and error pages ship in the main bundle. Every other page is loaded on demand,
  * so the large content files (products, industries, services, posts) are only downloaded when needed.
- * Content pages get their data from route loaders: the API when it is reachable, otherwise the bundled content.
+ * Content pages get their data from route loaders that load the matching file in src/content.
  */
 
 /** Builds a route `lazy` loader that picks one page component from a module. */
@@ -83,8 +83,7 @@ export const routes: RouteObject[] = [
       ...(import.meta.env.DEV
         ? [{ path: 'design-system', lazy: lazyPage(() => import('@/pages/DesignSystemPage'), (m) => m.DesignSystemPage) }]
         : []),
-      // Pages become explicit routes in later steps; until then the registry renders them.
-      { path: '*', element: <RegistryPage /> },
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ]

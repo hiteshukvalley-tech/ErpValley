@@ -100,6 +100,7 @@ export const industries: IndustryContent[] = [
       { slug: 'purchase-management', why: 'Turns material shortages into purchase orders and tracks supplier deliveries.' },
       { slug: 'finance-accounting', why: 'Posts actual production costs and inventory valuation without manual journals.' },
       { slug: 'reporting-analytics', why: 'Shows output, scrap, schedule adherence and cost variances by product or line.' },
+      { slug: 'workflow-automation', why: 'Routes work order changes, quality holds and material requests through approvals, so production is not left waiting for sign-off.' },
     ],
     integrations: ['Barcode and label printers', 'Machine and IoT data feeds', 'Ecommerce platforms', 'Shipping carriers', 'Bank feeds'],
     useCases: [
@@ -273,6 +274,7 @@ export const industries: IndustryContent[] = [
       { slug: 'crm', why: 'Keeps borrower records, communication history and follow-ups in one place.' },
       { slug: 'reporting-analytics', why: 'Tracks portfolio balances, overdue ageing and collections performance.' },
       { slug: 'integrations', why: 'Connects with credit bureau APIs, payment gateways and bank feeds.' },
+      { slug: 'hr-payroll', why: 'Keeps records, attendance and payroll for loan officers and collection teams alongside the rest of your operations.' },
     ],
     integrations: ['Credit bureau APIs', 'Payment gateways', 'Bank feeds', 'eSignature tools', 'SMS and email messaging', 'Identity verification services'],
     useCases: [
@@ -359,6 +361,7 @@ export const industries: IndustryContent[] = [
       { slug: 'hr-payroll', why: 'Manages staff records, shift rosters, leave and payroll including overtime and allowances.' },
       { slug: 'finance-accounting', why: 'Handles billing, receivables from payers and supplier payments in one ledger.' },
       { slug: 'reporting-analytics', why: 'Shows supply usage, wastage, staffing costs and receivables by department or site.' },
+      { slug: 'workflow-automation', why: 'Sends supply requests, purchase approvals and leave requests through set approval chains, so clinical staff are not chasing paperwork.' },
     ],
     integrations: ['Practice management systems', 'Payment gateways', 'Bank feeds', 'Biometric attendance devices', 'Barcode scanners'],
     useCases: [
@@ -619,6 +622,7 @@ export const industries: IndustryContent[] = [
       { slug: 'workflow-automation', why: 'Sends renewal alerts, rent reminders and routes maintenance requests to the right team.' },
       { slug: 'procurement', why: 'Manages contractor quotes and purchase orders for repairs and building services.' },
       { slug: 'reporting-analytics', why: 'Shows occupancy, rent roll, arrears and maintenance spend by property.' },
+      { slug: 'integrations', why: 'Connects payment gateways and bank feeds, so rent and service-charge payments are matched to the right lease automatically.' },
     ],
     integrations: ['Payment gateways', 'Bank feeds', 'Property listing portals', 'eSignature tools', 'SMS and email messaging'],
     useCases: [
@@ -705,6 +709,7 @@ export const industries: IndustryContent[] = [
       { slug: 'finance-accounting', why: 'Invoices by milestone, retainer or time-and-materials and tracks receivables.' },
       { slug: 'hr-payroll', why: 'Holds staff records, cost rates, leave and payroll that feed project costing.' },
       { slug: 'reporting-analytics', why: 'Shows utilisation, project margin and unbilled work by person, team or client.' },
+      { slug: 'workflow-automation', why: 'Automates timesheet reminders, expense approvals and invoice runs at the end of each billing period.' },
     ],
     integrations: ['Calendar and email tools', 'Payment gateways', 'Bank feeds', 'eSignature tools', 'Document storage'],
     useCases: [
@@ -878,6 +883,7 @@ export const industries: IndustryContent[] = [
       { slug: 'hr-payroll', why: 'Plans staff shifts, records attendance and runs payroll including service charges and overtime.' },
       { slug: 'finance-accounting', why: 'Consolidates property accounts and tracks supplier payments in one ledger.' },
       { slug: 'reporting-analytics', why: 'Compares food cost, labour cost and margins across properties and outlets.' },
+      { slug: 'purchase-management', why: 'Matches deliveries of food, linen and amenities against purchase orders and supplier invoices before anything is paid.' },
     ],
     integrations: ['Property management systems', 'POS systems', 'Payment gateways', 'Bank feeds', 'Biometric attendance devices'],
     useCases: [

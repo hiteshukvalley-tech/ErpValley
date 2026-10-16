@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, BookOpen, Clock, FileText, Lightbulb, Video } from 'lucide-react'
+import { ArrowLeft, ArrowRight, BookOpen, Clock, FileText, Lightbulb, Mail, Video } from 'lucide-react'
 import { useMemo } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
@@ -14,6 +14,7 @@ import { usePageMeta } from '@/hooks/usePageMeta'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { bySlug, useContent } from '@/services/content'
 import { cn } from '@/utils/cn'
+import { fillLastRowMd } from '@/utils/grid'
 
 const formatDate = (iso: string) =>
   new Date(`${iso}T00:00:00`).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
@@ -25,7 +26,7 @@ function PostCard({ post, featured }: { post: PostContent; featured?: boolean })
     <Link
       to={`/blog/${post.slug}`}
       className={cn(
-        'group flex h-full flex-col rounded-card border border-line bg-surface p-6 shadow-card transition duration-200 hover:-translate-y-0.5 hover:border-link/50 hover:shadow-pop',
+        'group flex h-full flex-col rounded-card border border-line bg-surface p-6 shadow-card card-link',
         featured && 'sm:p-8',
       )}
     >
@@ -46,6 +47,35 @@ function PostCard({ post, featured }: { post: PostContent; featured?: boolean })
   )
 }
 
+/** Cards that fill the empty slots at the end of the article grid, shown only at widths where a slot is empty. */
+const fillers = [
+  { to: '/newsletter', icon: Mail, title: 'Get new articles by email', text: 'Practical ERP guides and checklists, about once a month. Unsubscribe any time.', cta: 'Subscribe' },
+  { to: '/guides', icon: BookOpen, title: 'Step-by-step ERP guides', text: 'In-depth guides for choosing, planning and rolling out an ERP system.', cta: 'Read the guides' },
+]
+
+/** `cells` is how many grid cells the articles use (the featured article takes two). */
+function FillerCards({ cells }: { cells: number }) {
+  const md = (2 - (cells % 2)) % 2
+  const lg = (3 - (cells % 3)) % 3
+  return fillers.map((f, i) => (
+    <li key={f.to} className={cn('hidden', i < md ? 'md:block' : 'md:hidden', i < lg ? 'lg:block' : 'lg:hidden')}>
+      <Link
+        to={f.to}
+        className="group flex h-full flex-col rounded-card border border-dashed border-link/50 bg-primary-soft p-6 card-link"
+      >
+        <span className="inline-flex size-10 items-center justify-center rounded-lg bg-primary text-white">
+          <f.icon className="size-5" aria-hidden />
+        </span>
+        <span className="mt-4 font-display text-lg font-bold text-fg">{f.title}</span>
+        <span className="mt-2 flex-1 text-sm leading-relaxed text-fg-muted">{f.text}</span>
+        <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-link">
+          {f.cta} <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+        </span>
+      </Link>
+    </li>
+  ))
+}
+
 export function BlogPage() {
   usePageMeta('Blog', 'ERP insights from ERPVALLEY: practical articles on choosing, implementing and running ERP across finance, operations and technology.')
   const { posts } = useContent<'posts'>()
@@ -57,7 +87,8 @@ export function BlogPage() {
   return (
     <>
       <PageHero eyebrow="Blog" title="ERP insights" description="Practical articles on choosing, implementing and getting the most from ERP." />
-      <Section>
+      <Section aria-labelledby="articles-title">
+        <h2 id="articles-title" className="sr-only">Articles</h2>
         <div role="group" aria-label="Filter by category" className="flex flex-wrap gap-2">
           {[null, ...categories].map((c) => (
             <button
@@ -67,7 +98,7 @@ export function BlogPage() {
               onClick={() => setParams(c ? { category: c } : {})}
               className={cn(
                 'h-9 rounded-full border px-4 text-sm font-medium transition-colors',
-                active === c ? 'border-primary bg-primary text-white' : 'border-line text-fg-muted hover:text-fg',
+                active === c ? 'border-primary bg-primary text-white' : 'border-line text-fg-muted hover:border-link hover:bg-primary-soft hover:text-link',
               )}
             >
               {c ?? 'All'}
@@ -78,7 +109,7 @@ export function BlogPage() {
           <EmptyState className="mt-10" icon={FileText} title="No articles in this category yet" text="Try another category, or subscribe to hear about new articles." actions={<Button to="/newsletter">Subscribe</Button>} />
         ) : (
           <ul className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            <li className="md:col-span-2 lg:col-span-3">
+            <li className="md:col-span-2">
               <PostCard post={featured} featured />
             </li>
             {rest.map((p) => (
@@ -86,6 +117,7 @@ export function BlogPage() {
                 <PostCard post={p} />
               </li>
             ))}
+            <FillerCards cells={list.length + 1} />
           </ul>
         )}
       </Section>
@@ -101,8 +133,9 @@ export function GuidesPage() {
   return (
     <>
       <PageHero eyebrow="ERP guides" title="Step-by-step ERP guides" description="In-depth guides for planning, buying and rolling out an ERP system." />
-      <Section>
-        <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <Section aria-labelledby="guides-title">
+        <h2 id="guides-title" className="sr-only">All guides</h2>
+        <ul className={`grid gap-5 md:grid-cols-2 lg:grid-cols-3 ${fillLastRowMd}`}>
           {guides.map((g) => (
             <li key={g.slug}>
               <PostCard post={g} />
@@ -241,10 +274,10 @@ function PostView({ post }: { post: PostContent }) {
                   )
                 case 'callout':
                   return (
-                    <aside key={i} className="mt-6 flex gap-3 rounded-xl border border-link/30 bg-primary-soft p-5 text-fg">
+                    <div key={i} className="card-hover mt-6 flex gap-3 rounded-xl border border-link/30 bg-primary-soft p-5 text-fg">
                       <Lightbulb className="mt-0.5 size-5 shrink-0 text-link" aria-hidden />
                       <p className="leading-relaxed"><span className="font-semibold">Tip: </span>{b.text}</p>
-                    </aside>
+                    </div>
                   )
               }
             })}
@@ -259,12 +292,12 @@ function PostView({ post }: { post: PostContent }) {
           </article>
 
           {products.length > 0 && (
-            <aside className="lg:sticky lg:top-24 lg:self-start">
+            <div className="lg:sticky lg:top-24 lg:self-start">
               <p className="text-xs font-semibold uppercase tracking-wider text-fg-muted">Related products</p>
               <ul className="mt-3 space-y-2">
                 {products.map((p) => (
                   <li key={p.slug}>
-                    <Link to={`/products/${p.slug}`} className="flex items-center gap-3 rounded-xl border border-line bg-surface p-3 text-sm font-semibold text-fg hover:border-link/50 hover:text-link">
+                    <Link to={`/products/${p.slug}`} className="flex items-center gap-3 rounded-xl border border-line bg-surface p-3 text-sm font-semibold text-fg card-link hover:text-link">
                       <p.icon className="size-4 shrink-0 text-link" aria-hidden />
                       {p.name}
                     </Link>
@@ -274,7 +307,7 @@ function PostView({ post }: { post: PostContent }) {
               <Button to="/book-demo" size="sm" className="mt-4 w-full">
                 Book a Demo <ArrowRight className="size-4" aria-hidden />
               </Button>
-            </aside>
+            </div>
           )}
         </div>
       </Container>

@@ -12,7 +12,8 @@ export function Card({ className, interactive, children }: CardProps) {
     <div
       className={cn(
         'rounded-card border border-line bg-surface p-6 shadow-card',
-        interactive && 'transition duration-200 hover:-translate-y-0.5 hover:border-link/50 hover:shadow-pop',
+        // Plain cards are containers (forms, notices) and stay still; interactive ones use the shared link hover.
+        interactive && 'card-link',
         className,
       )}
     >

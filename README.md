@@ -1,123 +1,99 @@
 # ERPVALLEY
 
-Marketing, lead-generation and customer platform for ERPVALLEY ERP products and IT services.
+Marketing and lead-generation website for ERPVALLEY ERP products and IT services.
 
-| App | Stack | Status |
-|---|---|---|
-| `client/` | React 19, Vite, TypeScript, Tailwind CSS 4, React Router 7, Lucide | Steps 1–6 complete |
-| `server/` | Node.js, Express 5, TypeScript, MongoDB Atlas (Mongoose), Zod | Steps 5–6 complete: content API and lead forms |
-
-## Build steps
-
-1. Design system, layout, navigation — done
-2. Homepage — done
-3. Product, industry and service pages — done
-4. Company, resources, legal and search pages — done
-5. Backend API: content models, seed, public read API, search; the website reads content from the API — done
-6. Lead forms: contact, book a demo, request a quote, newsletter — done (stored in MongoDB; email alerts not set up yet)
-7. Accounts and admin panel (case studies, settings, content editing)
+It is a **static website**: React 19, Vite, TypeScript, Tailwind CSS 4, React Router 7 and Lucide, in `client/`.
+All content ships with the site (`client/src/content`). There is no server, database, login or admin panel.
+Forms are emailed to the team through [Web3Forms](https://web3forms.com).
 
 ## Run locally
 
 ```bash
-# 1. API (needs a MongoDB Atlas connection string)
-cd server
-npm install
-cp .env.example .env     # then put your Atlas connection string in MONGODB_URI
-npm run seed             # copies the website content into MongoDB (needs client/ dependencies installed)
-npm run dev              # http://localhost:5301/api
-
-# 2. Website
 cd client
 npm install
-npm run dev              # http://localhost:5300  (/api is proxied to the server; design reference: /design-system)
+cp .env.example .env.local   # then add your Web3Forms access key (see "Forms")
+npm run dev                  # http://localhost:5300  (design reference: /design-system)
 ```
 
-Other commands, in either folder: `npm test`, `npm run build`, `npm run typecheck`. The client also has `npm run lint`
-and `npm run preview` (http://localhost:4300).
+Other commands: `npm test`, `npm run lint`, `npm run typecheck`, `npm run build` (output in `client/dist/`) and
+`npm run preview` (serves the build on http://localhost:4300).
 
-## API (`server/`)
+## Deploy
 
-All responses are JSON. Content uses the same shapes as `client/src/content/types.ts`, with icons as Lucide icon names.
+Build with `npm run build` in `client/` and upload `client/dist/` to any static host (Netlify, Vercel, Cloudflare
+Pages, S3 + CloudFront, cPanel…). Add `VITE_WEB3FORMS_KEY` (and optionally `VITE_SITE_URL`) to the host's build
+settings, plus `VITE_GTM_ID` for tracking (see "Tracking"). These values are baked in at build time, so rebuild
+after changing them. The site uses client-side routing, so every path must serve `index.html`; `public/_redirects` (Netlify,
+Cloudflare Pages) and `vercel.json` (Vercel) already do this. On other hosts, add an equivalent rewrite rule.
 
-| Endpoint | Description |
-|---|---|
-| `GET /api/health` | Server and database status (503 when the database is down) |
-| `GET /api/settings` | Site name, URL, contact details and social links |
-| `GET /api/products`, `/api/products/:slug` | ERP modules, in navigation order |
-| `GET /api/industries`, `/api/industries/:slug` | Industry solutions |
-| `GET /api/services`, `/api/services/:slug` | Services |
-| `GET /api/posts?category=&kind=`, `/api/posts/:slug` | Blog articles and guides, newest first |
-| `GET /api/case-studies`, `/api/case-studies/:slug` | Published (client-approved) case studies only |
-| `GET /api/search?q=` | Full-text search across products, industries, services and articles |
-| `POST /api/leads/contact` | Contact form: name, email, topic, message (+ company, phone) |
-| `POST /api/leads/demo` | Book a demo: name, email, company, company size, modules, notes |
-| `POST /api/leads/quote` | Request a quote: as demo, plus services, timeline and requirements |
-| `POST /api/newsletter` | Newsletter signup (one record per email address) |
+## Forms
 
-Form endpoints need `consent: true`, answer `201` on success and `400` with per-field messages for invalid input.
-Leads and subscribers are stored in the `leads` and `subscribers` collections and are never exposed by the public
-API; view them in Atlas (Browse Collections) until the admin panel arrives in Step 7. Spam protection: a hidden
-honeypot field (bots get a normal response but nothing is stored) and a limit of 10 submissions per IP per 15
-minutes. Choice lists (topics, company sizes, timelines) live in `client/src/config/forms.ts` and
-`server/src/validation/forms.ts`; a test checks they match. To email the team about new leads, add an email service
-in `server/src/services/notify.ts`.
+Contact, Book a demo, Request a quote and Newsletter send their details to Web3Forms, which emails them to the
+address the access key was created with (`client/src/services/forms.ts`).
 
-The website loads products, industries, services, articles and case studies from the API through route loaders,
-and uses `/api/search` for search. If the API cannot be reached it falls back to the content bundled in
-`client/src/content`, so the site keeps working without the server. `VITE_API_URL` sets the API address
-(default `/api`; `off` uses only the bundled content). If the API is on another domain, add the website's address
-to the server's `CORS_ORIGIN`. Icons travel as Lucide names; a new icon must be added to `client/src/content/icons.ts`.
+1. Create a free access key at https://web3forms.com with the inbox that should receive enquiries.
+2. Put it in `client/.env.local` as `VITE_WEB3FORMS_KEY=...` and in your host's build settings.
 
-Security defaults: Helmet headers, CORS limited to `CORS_ORIGIN`, rate limiting on `/api`, validated query
-parameters, and errors that never expose internal details. Server tests run against an in-memory MongoDB, so they
-do not need Atlas.
+The key is public by design: it can only send messages to your inbox. Without it, the forms show a
+"not connected yet" message and send nothing. Each email lists the fields by their label, and "Reply" goes to the
+visitor. Spam protection: a hidden honeypot field (bots get a normal response but nothing is sent) plus Web3Forms'
+own filtering. Newsletter signups arrive as emails; keep the list in your email or newsletter tool.
 
-`npm run seed` is safe to re-run: it updates content by slug, never deletes, and creates site settings only once.
+## Tracking (Google Tag Manager)
+
+The site loads Google Tag Manager when `VITE_GTM_ID` is set (e.g. `GTM-XXXXXXX`); with no ID, no tracking code
+is added and nothing is tracked. GA4, Meta Pixel and other tools are added **inside the GTM dashboard**, never in
+the code. Set `VITE_GTM_ENABLED=false` to switch tracking off for an environment.
+
+- The GTM snippet is added to `index.html` at build time (`vite.config.ts`), so it is baked into the build:
+  **rebuild and redeploy after changing the ID**.
+- `client/src/services/analytics.ts` pushes these dataLayer events (no names, emails or phone numbers):
+  - `utm_captured` on every full page load: `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`,
+    `utm_content`, `gclid`, `fbclid`, `referrer`, `landing_page`, `captured_at`. They are kept for 30 days in the
+    first-party cookie `ev_attribution`. A new campaign link replaces them; otherwise the first touch is kept.
+  - `page_view` on the first load and every route change: `page_path`, `page_location`, `page_title`. In GTM, fire
+    GA4 page views on this custom event (not on "All Pages" or "History Change"), or they are counted twice.
+  - `form_submit` after a contact, demo, quote or newsletter form is sent: `form_name`, `page_path` and the
+    attribution values above. The same attribution is also listed in the enquiry email.
+- Use `trackEvent(name, data)` from `services/analytics.ts` for new events.
+
+## Content and photos
+
+- Page text lives in `client/src/content/` (products, industries, services, posts, company, legal, home).
+  Tests check the structure, links and the content rule: no invented customers, statistics, ratings,
+  certifications or awards. Case studies go in `content/caseStudies.ts` only once the client has approved them.
+- Photos are from Unsplash (free under the Unsplash License), stored in `client/public/images/photos/` as
+  `<key>-800.webp` and `<key>-1600.webp`, and registered with alt text in `client/src/content/photos.ts`.
+  They show situations and workplaces, never presented as ERPVALLEY customers or staff. A test checks that every
+  registered photo exists in both sizes and that no unused files ship. See `DESIGN.md` for how to add one.
+- Contact details for the footer and contact page are in `client/src/config/site.ts` (empty values are hidden).
+- The legal pages are templates with `[placeholders]`; have them reviewed before launch.
 
 ## Frontend structure
 
 ```
 client/src/
-  components/common      Logo, ThemeProvider, ThemeToggle, PageHero, DetailHero, Steps, CtaBand, …
+  components/common      Logo, ThemeProvider, PageHero, DetailHero, ProblemSolution, PhotoCards, Steps, CtaBand, …
   components/navigation  Header, MegaMenu, MobileNav, Footer
-  components/ui          Button, Card, Badge, Container, Section, Accordion, EmptyState, Reveal
+  components/ui          Button, Card, Badge, Container, Section, Accordion, EmptyState, Reveal, Photo
   components/home        Homepage sections
   components/forms       LeadForm (contact, demo and quote forms)
   components/mockups     Dashboard and module previews (sample data)
   config/                navigation.ts (menus + page registry), site.ts (contact details), forms.ts (form choices)
-  content/               Page content (products, industries, services, posts, company, legal) + types.ts
+  content/               Page content, photos.ts (photo registry) and types.ts
   hooks/                 useTheme, usePageMeta, useInView
-  layouts/               PublicLayout
   pages/                 Home, products/, industries/, services/, company/, resources/, leads/, legal/, 404, 500
   routes/                router.tsx (pages other than the homepage are lazy-loaded)
-  services/              api.ts, content.ts (route loaders: API first, bundled content as fallback), search.ts
+  services/              content.ts (route loaders), search.ts + searchIndex.ts (in-browser search), forms.ts
   styles/                index.css (design tokens, light/dark themes)
   test/                  unit tests
-```
-
-## Server structure
-
-```
-server/src/
-  app.ts            Express app (middleware, routes, error handling)
-  server.ts         Entry point: validate env, connect to MongoDB, listen, graceful shutdown
-  config/env.ts     Environment validation (Zod)
-  db/               MongoDB connection
-  models/           Product, Industry, Service, Post, CaseStudy, SiteSetting, Lead, Subscriber
-  routes/           Content, search, forms, settings and health endpoints
-  validation/       Form input rules (Zod)
-  services/         New-lead notification (logs only; email can be added here)
-  seed/             Upsert logic used by the seed script
-  scripts/          npm run seed (loads client/src/content)
-server/test/        API tests (Vitest + Supertest + in-memory MongoDB)
 ```
 
 ## Design tokens
 
 Brand colors are defined once in `client/src/styles/index.css` as `--ev-*` variables. Components use semantic
 utilities (`bg-bg`, `bg-bg-alt`, `bg-surface`, `text-fg`, `text-fg-muted`, `border-line`, `bg-primary`, `text-link`)
-that switch automatically between light and dark themes.
+that switch automatically between light and dark themes. Design decisions are recorded in `DESIGN.md`.
 
 ## Logo
 

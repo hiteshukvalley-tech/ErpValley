@@ -8,7 +8,8 @@ import { Hero } from '@/components/home/Hero'
 import { HomeFaq } from '@/components/home/HomeFaq'
 import { Industries } from '@/components/home/Industries'
 import { Process } from '@/components/home/Process'
-import { Technology } from '@/components/home/Technology'
+// Technology section ("Modern technology, built to last") is hidden for now; uncomment here and below to restore it.
+// import { Technology } from '@/components/home/Technology'
 import { WhatWeOffer } from '@/components/home/WhatWeOffer'
 import { usePageMeta } from '@/hooks/usePageMeta'
 
@@ -28,7 +29,7 @@ export function HomePage() {
       <Capabilities />
       <CaseStudies />
       <Process />
-      <Technology />
+      {/* <Technology /> */}
       <HomeFaq />
       <CtaBand
         title="Ready to run your business smarter?"

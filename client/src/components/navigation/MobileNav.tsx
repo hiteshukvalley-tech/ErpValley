@@ -1,10 +1,11 @@
 import { ChevronDown, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { createPortal } from 'react-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Logo } from '@/components/common/Logo'
 import { ThemeToggle } from '@/components/common/ThemeToggle'
 import { Button } from '@/components/ui/Button'
-import { mainNav } from '@/config/navigation'
+import { activeMenuIndex, mainNav } from '@/config/navigation'
 import { cn } from '@/utils/cn'
 
 interface MobileNavProps {
@@ -16,6 +17,8 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
   const [expanded, setExpanded] = useState<string | null>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
+  const { pathname } = useLocation()
+  const currentIndex = activeMenuIndex(pathname)
 
   useEffect(() => {
     if (!open) return
@@ -48,7 +51,9 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
 
   if (!open) return null
 
-  return (
+  // Rendered into <body>: the header's backdrop blur would otherwise make `fixed` position against the header,
+  // squeezing the drawer into the header strip instead of covering the screen.
+  return createPortal(
     <div className="fixed inset-0 z-[60] lg:hidden" role="dialog" aria-modal="true" aria-label="Site menu">
       <div className="absolute inset-0 bg-midnight/60" onClick={onClose} aria-hidden />
       <div
@@ -64,7 +69,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
               type="button"
               onClick={onClose}
               aria-label="Close menu"
-              className="inline-flex size-10 items-center justify-center rounded-lg border border-line text-fg"
+              className="inline-flex size-10 items-center justify-center rounded-lg border border-line text-fg transition-colors hover:border-link hover:bg-bg-alt"
             >
               <X className="size-5" aria-hidden />
             </button>
@@ -73,8 +78,9 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
 
         <nav aria-label="Mobile" className="flex-1 overflow-y-auto px-2 py-3">
           <ul>
-            {mainNav.map((menu) => {
+            {mainNav.map((menu, i) => {
               const isOpen = expanded === menu.label
+              const isCurrent = currentIndex === i
               const items = menu.groups.flatMap((g) => g.items)
               return (
                 <li key={menu.label} className="border-b border-line last:border-0">
@@ -82,9 +88,20 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                     type="button"
                     aria-expanded={isOpen}
                     onClick={() => setExpanded(isOpen ? null : menu.label)}
-                    className="flex w-full items-center justify-between px-3 py-3.5 text-left text-base font-semibold text-fg"
+                    className={cn(
+                      'flex w-full items-center justify-between rounded-lg px-3 py-3.5 text-left text-base font-semibold transition-colors hover:bg-bg-alt active:bg-bg-alt',
+                      isOpen || isCurrent ? 'text-link' : 'text-fg',
+                    )}
                   >
-                    {menu.label}
+                    <span className="flex items-center gap-2">
+                      {menu.label}
+                      {isCurrent && (
+                        <>
+                          <span className="size-1.5 rounded-full bg-primary" aria-hidden />
+                          <span className="sr-only">(current section)</span>
+                        </>
+                      )}
+                    </span>
                     <ChevronDown className={cn('size-5 text-fg-muted transition-transform', isOpen && 'rotate-180')} aria-hidden />
                   </button>
                   {isOpen && (
@@ -94,7 +111,11 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                           <Link
                             to={item.to}
                             onClick={onClose}
-                            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-fg-muted hover:bg-bg-alt hover:text-fg"
+                            aria-current={pathname === item.to ? 'page' : undefined}
+                            className={cn(
+                              'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-bg-alt hover:text-fg active:bg-primary-soft',
+                              pathname === item.to ? 'bg-primary-soft font-semibold text-link' : 'text-fg-muted',
+                            )}
                           >
                             <item.icon className="size-4 shrink-0 text-link" aria-hidden />
                             {item.label}
@@ -120,11 +141,12 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
           <Button to="/book-demo" onClick={onClose} size="lg">
             Book a Demo
           </Button>
-          <Button to="/login" onClick={onClose} variant="secondary" size="lg">
-            Log in
+          <Button to="/contact" onClick={onClose} variant="secondary" size="lg">
+            Contact us
           </Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

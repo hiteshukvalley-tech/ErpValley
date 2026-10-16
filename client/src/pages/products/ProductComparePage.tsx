@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button'
 import { Reveal } from '@/components/ui/Reveal'
 import { Section, SectionHeader } from '@/components/ui/Section'
 import type { ProductSlug } from '@/content/types'
+import { photos } from '@/content/photos'
 import { usePageMeta } from '@/hooks/usePageMeta'
 import { bySlug, useContent } from '@/services/content'
 import { cn } from '@/utils/cn'
@@ -57,6 +58,7 @@ export function ProductComparePage() {
   return (
     <>
       <PageHero
+        image={photos.warehouseFloor}
         eyebrow="Product comparison"
         title="Find the right mix of modules"
         description="See what each module does, who uses it and how they fit together. Every module runs on the same ERPVALLEY platform."
@@ -80,11 +82,11 @@ export function ProductComparePage() {
               <Reveal delay={i * 80} className="h-full">
                 <div
                   className={cn(
-                    'flex h-full flex-col rounded-card border bg-surface p-6 shadow-card',
+                    'card-hover flex h-full flex-col rounded-card border bg-surface p-6 shadow-card',
                     i === 1 ? 'border-link ring-1 ring-link' : 'border-line',
                   )}
                 >
-                  <span className="inline-flex size-11 items-center justify-center rounded-xl bg-primary-soft text-link">
+                  <span className="card-icon inline-flex size-11 items-center justify-center rounded-xl bg-primary-soft text-link">
                     <set.icon className="size-5" aria-hidden />
                   </span>
                   <h3 className="mt-4 text-xl font-bold">{set.name}</h3>

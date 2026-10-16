@@ -2,13 +2,14 @@ import { CheckCircle2, Loader2 } from 'lucide-react'
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
-import { ApiError, postApi } from '@/services/api'
+import { attributionEmailFields, trackFormSubmit } from '@/services/analytics'
+import { FormError, submitForm } from '@/services/forms'
 import { cn } from '@/utils/cn'
 
 /*
  * Form used by the contact, book-a-demo and request-a-quote pages.
- * Checks input in the browser for quick feedback; the API checks everything again and its field errors are shown
- * the same way. Includes a hidden "website" field that only bots fill in.
+ * Input is checked in the browser, then sent to Web3Forms (services/forms.ts), which emails it to the team.
+ * Includes a hidden "website" field that only bots fill in.
  */
 
 export interface ChoiceOption {
@@ -54,19 +55,29 @@ function validate(field: FieldDef, value: string | string[]): string {
   return ''
 }
 
+/** Values keyed by field label, with checkbox choices shown by name, so the email reads naturally. */
+const emailValues = (fields: FieldDef[], values: FormValues) =>
+  Object.fromEntries(
+    fields.map((f) => {
+      const v = values[f.name]
+      if (f.kind !== 'checkboxes') return [f.label, v]
+      return [f.label, f.options.filter((o) => (v as string[]).includes(o.value)).map((o) => o.label)]
+    }),
+  )
+
 const emptyValues = (fields: FieldDef[]): FormValues =>
   Object.fromEntries(fields.map((f) => [f.name, f.kind === 'checkboxes' ? [] : '']))
 
 export function LeadForm({
-  endpoint,
+  formName,
   fields,
   initial,
   submitLabel,
   successTitle,
   successText,
 }: {
-  /** API path, e.g. "/leads/demo". */
-  endpoint: string
+  /** Shown in the email subject, e.g. "Demo request". */
+  formName: string
   fields: FieldDef[]
   initial?: FormValues
   submitLabel: string
@@ -113,19 +124,20 @@ export function LeadForm({
 
     setState('sending')
     try {
-      await postApi(endpoint, { ...values, consent, website: honeypot, page: pathname })
+      await submitForm({
+        subject: `${formName} from ${String(values.name ?? '').trim() || 'the website'}`,
+        values: { Form: formName, ...emailValues(fields, values), Page: pathname, Consent: 'Agreed to the privacy policy', ...attributionEmailFields() },
+        replyTo: typeof values.email === 'string' ? values.email : undefined,
+        honeypot,
+      })
+      // Bot submissions (honeypot filled) are not counted as leads.
+      if (!honeypot) trackFormSubmit(formName)
       setState('sent')
     } catch (err) {
       setState('idle')
-      const issues = err instanceof ApiError ? err.issues : {}
-      const fieldErrs = Object.fromEntries(
-        Object.entries(issues).flatMap(([k, v]) => (v?.length ? [[k, v[0]]] : [])),
-      )
-      if (err instanceof ApiError && err.status === 400 && Object.keys(fieldErrs).length) {
-        setErrors(fieldErrs)
-        focusFirstError(fieldErrs)
-      } else if (err instanceof ApiError && (err.status === 429 || err.status === 503)) {
-        setFormError(err.message)
+      if (err instanceof FormError && err.kind === 'not-configured') {
+        if (import.meta.env.DEV) console.warn('Set VITE_WEB3FORMS_KEY in client/.env.local to send forms.')
+        setFormError('This form is not connected yet, so your request was not sent. Please contact us by email or phone instead.')
       } else {
         setFormError('We could not send your request. Please check your connection and try again in a few minutes.')
       }

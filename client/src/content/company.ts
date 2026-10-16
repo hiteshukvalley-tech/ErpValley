@@ -92,6 +92,11 @@ export const about: { mission: string; story: string[]; whatWeDo: IconItem[]; ap
       title: 'Partners after go-live',
       text: 'Launch is a milestone, not the finish line. We monitor, support and improve the system as your needs evolve.',
     },
+    {
+      icon: MessageSquare,
+      title: 'Clear, regular communication',
+      text: 'One accountable project manager, weekly progress updates and decisions agreed in writing, so you always know where things stand.',
+    },
   ],
 }
 
@@ -267,6 +272,17 @@ export const techGroups: TechGroup[] = [
       { name: 'Role-based access control', use: 'Permissions that limit each user to what their role requires.' },
     ],
   },
+  {
+    icon: Palette,
+    title: 'Design and delivery',
+    description: 'How screens are designed and how work is planned, tracked and handed over.',
+    items: [
+      { name: 'Figma', use: 'Screen designs and clickable prototypes reviewed with your users before development.' },
+      { name: 'Git', use: 'Full version history of every change, with branches for each feature or fix.' },
+      { name: 'Issue tracking', use: 'A shared backlog so you can see what is planned, in progress and done.' },
+      { name: 'Documentation', use: 'Admin and user guides delivered with each release.' },
+    ],
+  },
 ]
 
 /* ---------- Engagement models and hiring developers ---------- */
@@ -439,8 +455,13 @@ export const pricingFactors: IconItem[] = [
   },
   {
     icon: Wrench,
-    title: 'Customization and support level',
-    text: 'Custom modules, workflows and reports, plus the level of ongoing support your operations require.',
+    title: 'Customization',
+    text: 'Custom modules, workflows, fields and reports built for processes that the standard modules do not cover.',
+  },
+  {
+    icon: LifeBuoy,
+    title: 'Support level',
+    text: 'The response times, hours of cover and ongoing improvements your operations need after go-live.',
   },
 ]
 

@@ -1,6 +1,8 @@
 import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Container } from '@/components/ui/Container'
+import { Photo } from '@/components/ui/Photo'
+import type { PhotoAsset } from '@/content/photos'
 import { cn } from '@/utils/cn'
 import { Breadcrumbs, type Crumb } from './Breadcrumbs'
 
@@ -15,16 +17,26 @@ interface DetailHeroProps {
   visual?: ReactNode
   /** Short facts under the CTAs (e.g. typical users). */
   meta?: ReactNode
+  /** Background photo behind the hero, darkened so the text stays readable. */
+  image?: PhotoAsset
 }
 
 /** Two-column hero for product, industry and service detail pages. */
-export function DetailHero({ crumbs, eyebrow, icon: Icon, title, description, actions, visual, meta }: DetailHeroProps) {
+export function DetailHero({ crumbs, eyebrow, icon: Icon, title, description, actions, visual, meta, image }: DetailHeroProps) {
   return (
     <section className="bg-hero relative overflow-hidden text-white">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] [background-size:56px_56px] [mask-image:linear-gradient(to_bottom,black,transparent)]"
-        aria-hidden
-      />
+      {image ? (
+        <div className="absolute inset-0" aria-hidden>
+          <Photo photo={image} sizes="100vw" priority decorative />
+          <div className="absolute inset-0 bg-gradient-to-r from-midnight via-midnight/90 to-midnight/55" />
+          <div className="absolute inset-0 bg-gradient-to-t from-midnight/80 to-transparent" />
+        </div>
+      ) : (
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] [background-size:56px_56px] [mask-image:linear-gradient(to_bottom,black,transparent)]"
+          aria-hidden
+        />
+      )}
       <Container className="relative py-12 sm:py-16 lg:py-20">
         <Breadcrumbs items={crumbs} />
         <div className={cn('mt-8 grid items-center gap-12', visual && 'lg:grid-cols-[1fr_1.1fr]')}>

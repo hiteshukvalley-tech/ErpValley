@@ -27,7 +27,7 @@ export const privacyPolicy: LegalDoc = {
       ],
       items: [
         'Contact, demo and quote request forms: your name, business email address, company name, phone number (optional) and the requirements or message you provide.',
-        'Accounts: your name, email address and a password. Passwords are stored only in hashed form and are never stored in plain text.',
+        'Newsletter signup: your email address.',
         'Server logs: technical details such as IP address, browser type, pages requested, date and time, recorded automatically when you access the website.',
         'Preferences: your light or dark theme choice, stored locally in your browser and not sent to us.',
       ],
@@ -37,7 +37,7 @@ export const privacyPolicy: LegalDoc = {
       paragraphs: ['We use personal information for the following purposes:'],
       items: [
         'To respond to your enquiries, schedule demos and prepare quotes or proposals.',
-        'To create and manage your account and keep you signed in securely.',
+        'To send the newsletter you subscribed to, until you unsubscribe.',
         'To provide, maintain and improve our website, platform and services.',
         'To protect the website and our users, including detecting and preventing misuse.',
         'To comply with legal obligations that apply to us.',
@@ -57,21 +57,24 @@ export const privacyPolicy: LegalDoc = {
         'We may also disclose information where required by law, to protect our rights or the safety of others, or as part of a business transfer such as a merger or acquisition.',
       ],
       items: [
-        'Hosting and infrastructure providers that store and serve the website and platform.',
-        'Email delivery providers that send account, enquiry and service emails on our behalf.',
+        'Hosting providers that serve the website.',
+        'A form delivery provider (Web3Forms) that forwards the details you submit through our forms to our team by email.',
+        'Email providers that we use to reply to enquiries and send the newsletter.',
+        'A font provider (Google Fonts) that serves the typefaces used on the website; your browser requests them directly, which shares your IP address with that provider.',
+        'A tag management service (Google Tag Manager) that loads the website measurement tools described in our Cookie Policy.',
       ],
     },
     {
       heading: 'Data retention',
       paragraphs: [
         'We keep personal information only for as long as needed for the purposes described in this policy, including to meet legal, accounting or reporting requirements.',
-        'Enquiry information is kept while we are discussing your requirements and for a reasonable period afterwards. Account information is kept while your account is active. Server logs are kept for a limited period for security and troubleshooting.',
+        'Enquiry information is kept while we are discussing your requirements and for a reasonable period afterwards. Newsletter addresses are kept until you unsubscribe. Server logs are kept for a limited period for security and troubleshooting.',
       ],
     },
     {
       heading: 'Security',
       paragraphs: [
-        'We use reasonable technical and organizational measures to protect personal information, including encrypted connections (HTTPS), hashed passwords, HTTP-only session cookies, role-based access controls and audit logs for administrative actions.',
+        'We use reasonable technical and organizational measures to protect personal information, including encrypted connections (HTTPS) for every page and form, and limiting access to enquiries to the people who need them to respond.',
         'No method of transmission or storage is completely secure, so we cannot guarantee absolute security.',
       ],
     },
@@ -90,7 +93,7 @@ export const privacyPolicy: LegalDoc = {
     {
       heading: 'Cookies and local storage',
       paragraphs: [
-        'We use essential cookies to keep you signed in and store your theme preference locally in your browser. We do not use advertising cookies. Details are set out in our Cookie Policy.',
+        'The website sets a first-party cookie that remembers how you first reached us (for example the campaign link or website that referred you) for 30 days, and stores your theme preference locally in your browser. Measurement tools loaded through Google Tag Manager may set their own cookies. Details are set out in our Cookie Policy.',
       ],
     },
     {
@@ -116,7 +119,7 @@ export const termsOfService: LegalDoc = {
     {
       heading: 'Acceptance of these terms',
       paragraphs: [
-        'These terms form an agreement between you and [Company legal name] ("ERPVALLEY", "we", "us" or "our"). By accessing or using this website or creating an account, you agree to these terms.',
+        'These terms form an agreement between you and [Company legal name] ("ERPVALLEY", "we", "us" or "our"). By accessing or using this website, you agree to these terms.',
         'If you use the website on behalf of a business, you confirm that you are authorized to accept these terms for that business. If you do not agree, do not use the website.',
       ],
     },
@@ -124,14 +127,7 @@ export const termsOfService: LegalDoc = {
       heading: 'Our services',
       paragraphs: [
         'ERPVALLEY provides a modular ERP platform and related services, including implementation, custom development, consulting, integrations, data migration, quality assurance, support and dedicated developers.',
-        'The website provides information about these services and lets you contact us, request demos and quotes, and manage an account. Delivery of platform access or professional services is governed by a separate signed agreement.',
-      ],
-    },
-    {
-      heading: 'Accounts',
-      paragraphs: [
-        'You must provide accurate information when creating an account and keep it up to date. You are responsible for keeping your password confidential and for activity that takes place under your account.',
-        'Tell us promptly at [Contact email] if you believe your account has been accessed without permission. We may suspend or close accounts that breach these terms.',
+        'The website provides information about these services and lets you contact us, request demos and quotes, and subscribe to our newsletter. Delivery of platform access or professional services is governed by a separate signed agreement.',
       ],
     },
     {
@@ -139,7 +135,7 @@ export const termsOfService: LegalDoc = {
       paragraphs: ['When using the website, you agree not to:'],
       items: [
         'Break any applicable law or infringe the rights of others.',
-        'Attempt to gain unauthorized access to the website, other accounts or our systems.',
+        'Attempt to gain unauthorized access to the website or our systems.',
         'Interfere with or disrupt the website, including by introducing malware or overloading our infrastructure.',
         'Scrape, copy or harvest content or data by automated means without our permission.',
         'Submit false, misleading or unlawful information through our forms.',
@@ -207,12 +203,13 @@ export const cookiePolicy: LegalDoc = {
       ],
     },
     {
-      heading: 'Essential cookies',
+      heading: 'Cookies',
       paragraphs: [
-        'We use essential cookies to keep you signed in after you log in to your account. These cookies are HTTP-only, which means they cannot be read by scripts running in the page. The website cannot provide secure sign-in without them, so they do not require consent.',
+        'There are no accounts or sign-in on the website, so no session cookies are needed. The website sets one first-party cookie of its own, described below.',
+        'We use Google Tag Manager to load website measurement tools. Those tools may set their own cookies; the tools in use are listed here [List of measurement tools and their cookies].',
       ],
       items: [
-        'Session cookie: keeps you signed in during your visit and identifies your session to our server. It is set only when you log in and is removed when you log out or the session expires.',
+        'ev_attribution (30 days): records how you first arrived, such as campaign tags in the link (utm parameters), ad click identifiers and the referring website, so we can tell which campaigns bring enquiries. It contains no name, email address or other contact details.',
       ],
     },
     {
@@ -225,14 +222,14 @@ export const cookiePolicy: LegalDoc = {
     {
       heading: 'What we do not use',
       paragraphs: [
-        'We do not use advertising cookies or cross-site tracking cookies. We do not currently use analytics cookies.',
-        'If we add analytics in the future, we will update this policy and ask for your consent before setting any non-essential cookies.',
+        'We do not sell information collected through cookies. Analytics or advertising tools are added only through Google Tag Manager, and this policy will list each one before it is used.',
+        'Where the law requires it, we ask for your consent before setting non-essential cookies.',
       ],
     },
     {
       heading: 'Managing cookies and storage',
       paragraphs: [
-        'You can view, block or delete cookies and local storage through your browser settings. If you block essential cookies, you will not be able to sign in to your account. If you clear local storage, the website will return to its default theme.',
+        'You can view, block or delete cookies and local storage through your browser settings. If you clear local storage, the website will return to its default theme.',
       ],
     },
     {

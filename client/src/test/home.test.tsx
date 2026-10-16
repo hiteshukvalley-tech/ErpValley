@@ -20,13 +20,16 @@ describe('homepage', () => {
       'A flexible platform that connects to your tools',
       'How we deliver ERP projects',
       'A clear path from first call to go-live',
-      'Modern technology, built to last',
       'Questions businesses ask us',
       'Ready to run your business smarter?',
     ]
     const positions = expected.map((t) => headings.indexOf(t))
     expect(positions.every((p) => p >= 0)).toBe(true)
     expect([...positions].sort((a, b) => a - b)).toEqual(positions)
+  })
+
+  it('does not show the hidden technology section', () => {
+    expect(screen.queryByRole('heading', { name: 'Modern technology, built to last' })).not.toBeInTheDocument()
   })
 
   it('has a single h1 with the hero headline and both hero CTAs', () => {

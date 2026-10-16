@@ -9,6 +9,7 @@ import { Section, SectionHeader } from '@/components/ui/Section'
 import { engagementTypes } from '@/content/home'
 import { usePageMeta } from '@/hooks/usePageMeta'
 import { bySlug, useContent } from '@/services/content'
+import { fillLastRowMd } from '@/utils/grid'
 
 export function CaseStudiesPage() {
   const { caseStudies, industries } = useContent<'caseStudies' | 'industries'>()
@@ -34,12 +35,12 @@ export function CaseStudiesPage() {
       <Section aria-labelledby="published-title">
         <h2 id="published-title" className="sr-only">Published case studies</h2>
         {caseStudies.length > 0 ? (
-          <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <ul className={`grid gap-5 md:grid-cols-2 lg:grid-cols-3 ${fillLastRowMd}`}>
             {caseStudies.map((c) => (
               <li key={c.slug}>
                 <Link
                   to={`/case-studies/${c.slug}`}
-                  className="flex h-full flex-col rounded-card border border-line bg-surface p-6 shadow-card transition hover:-translate-y-0.5 hover:border-link/50 hover:shadow-pop"
+                  className="flex h-full flex-col rounded-card border border-line bg-surface p-6 shadow-card card-link"
                 >
                   <span className="text-xs font-semibold uppercase tracking-wider text-link">
                     {industryBySlug.get(c.industry)?.name}
@@ -74,7 +75,7 @@ export function CaseStudiesPage() {
           {engagementTypes.map((e, i) => (
             <li key={e.title}>
               <Reveal delay={i * 80} className="h-full">
-                <div className="h-full rounded-card border border-line bg-surface p-6 shadow-card">
+                <div className="card-hover h-full rounded-card border border-line bg-surface p-6 shadow-card">
                   <span className="inline-flex size-11 items-center justify-center rounded-xl bg-primary text-white">
                     <e.icon className="size-5" aria-hidden />
                   </span>

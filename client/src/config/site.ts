@@ -1,7 +1,6 @@
 /**
  * Business details shown in the footer and contact page.
  * Leave a value empty until it is confirmed — empty values are not rendered.
- * In Step 5+ these move to the SiteSetting collection and become editable in the admin panel.
  */
 export const siteConfig: SiteConfig = {
   name: 'ERPVALLEY',

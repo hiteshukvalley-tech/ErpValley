@@ -86,7 +86,7 @@ export function CaseStudyView({ study: c, related, content }: {
             <SectionHeader id="outcomes-title" align="left" eyebrow="Verified outcomes" title="Results confirmed by the client" />
             <ul className="mt-8 space-y-4">
               {c.outcomes.map((o) => (
-                <li key={o} className="flex items-start gap-3 rounded-card border border-line bg-surface p-5 shadow-card">
+                <li key={o} className="card-hover flex items-start gap-3 rounded-card border border-line bg-surface p-5 shadow-card">
                   <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-link" aria-hidden />
                   <span className="text-fg">{o}</span>
                 </li>

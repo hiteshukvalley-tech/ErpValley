@@ -1,5 +1,5 @@
-import { ArrowRight, Boxes } from 'lucide-react'
-import { useParams } from 'react-router-dom'
+import { ArrowRight, Boxes, PlugZap } from 'lucide-react'
+import { Link, useParams } from 'react-router-dom'
 import { Chips } from '@/components/common/Chips'
 import { CtaBand } from '@/components/common/CtaBand'
 import { DetailHero } from '@/components/common/DetailHero'
@@ -10,6 +10,7 @@ import { Steps } from '@/components/common/Steps'
 import { Button } from '@/components/ui/Button'
 import { Reveal } from '@/components/ui/Reveal'
 import { Section, SectionHeader } from '@/components/ui/Section'
+import { industryPhotos } from '@/content/photos'
 import type { IndustryContent } from '@/content/types'
 import { usePageMeta } from '@/hooks/usePageMeta'
 import { NotFoundPage } from '@/pages/NotFoundPage'
@@ -36,6 +37,7 @@ function IndustryView({ industry: ind }: { industry: IndustryContent }) {
         crumbs={[{ label: 'Industries', to: '/industries' }, { label: ind.name }]}
         eyebrow={`ERP for ${ind.name}`}
         icon={ind.icon}
+        image={industryPhotos[ind.slug]}
         title={ind.headline}
         description={ind.summary}
         actions={
@@ -47,17 +49,23 @@ function IndustryView({ industry: ind }: { industry: IndustryContent }) {
           </>
         }
         visual={
-          <div className="rounded-2xl border border-white/15 bg-white/[0.04] p-6 backdrop-blur-sm">
+          <div className="card-hover rounded-2xl border border-white/15 bg-white/[0.04] p-6 backdrop-blur-sm hover:bg-white/[0.08]">
             <p className="flex items-center gap-2 text-sm font-semibold text-white">
               <Boxes className="size-4 text-logo-blue" aria-hidden /> Recommended modules
             </p>
             <ul className="mt-4 grid gap-2 sm:grid-cols-2">
               {modules.map((m) => (
-                <li key={m.to} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] p-3">
-                  <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-electric text-white">
-                    <m.icon className="size-4" aria-hidden />
-                  </span>
-                  <span className="text-sm font-medium text-white">{m.title}</span>
+                <li key={m.to}>
+                  <Link
+                    to={m.to}
+                    className="group flex h-full items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] p-3 transition-colors hover:border-logo-blue/60 hover:bg-white/[0.1]"
+                  >
+                    <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-electric text-white">
+                      <m.icon className="size-4" aria-hidden />
+                    </span>
+                    <span className="flex-1 text-sm font-medium text-white">{m.title}</span>
+                    <ArrowRight className="size-4 text-mist opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100" aria-hidden />
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -112,8 +120,8 @@ function IndustryView({ industry: ind }: { industry: IndustryContent }) {
               {ind.useCases.map((u, i) => (
                 <li key={u.title}>
                   <Reveal delay={i * 70}>
-                    <div className="flex gap-4 rounded-card border border-line bg-surface p-5 shadow-card">
-                      <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-soft font-display text-sm font-bold text-link">
+                    <div className="card-hover flex gap-4 rounded-card border border-line bg-surface p-5 shadow-card">
+                      <span className="card-icon inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-soft font-display text-sm font-bold text-link">
                         {i + 1}
                       </span>
                       <div>
@@ -126,10 +134,24 @@ function IndustryView({ industry: ind }: { industry: IndustryContent }) {
               ))}
             </ul>
           </div>
-          <div className="self-start rounded-3xl border border-line bg-surface p-6 shadow-card sm:p-8">
-            <h3 className="text-lg font-bold">Integrations</h3>
+          {/* Stretches to the height of the use-case list beside it; the link sits at the bottom. */}
+          <div className="card-hover flex flex-col rounded-3xl border border-line bg-surface p-6 shadow-card sm:p-8">
+            <span className="card-icon inline-flex size-11 items-center justify-center rounded-xl bg-primary-soft text-link">
+              <PlugZap className="size-5" aria-hidden />
+            </span>
+            <h3 className="mt-5 text-lg font-bold">Integrations</h3>
             <p className="mt-2 text-sm text-fg-muted">ERPVALLEY connects with the systems {ind.name.toLowerCase()} teams rely on.</p>
             <Chips items={ind.integrations} className="mt-5" />
+            {/* On large screens mt-auto pushes this to the bottom of the stretched card; on phones it keeps a normal gap. */}
+            <div className="mt-8 border-t border-line pt-6 lg:mt-auto">
+              <p className="text-sm text-fg-muted">Need another system connected?</p>
+              <Link
+                to="/services/third-party-integrations"
+                className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-link hover:underline"
+              >
+                Ask about a custom integration <ArrowRight className="size-4" aria-hidden />
+              </Link>
+            </div>
           </div>
         </div>
       </Section>

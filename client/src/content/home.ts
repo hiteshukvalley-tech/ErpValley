@@ -197,7 +197,7 @@ export const securityPoints: { title: string; icon: LucideIcon }[] = [
   { title: 'Scalable, modular architecture', icon: Boxes },
 ]
 
-/** Engagement types shown until verified case studies are published from the admin panel. */
+/** Engagement types shown until verified case studies are added to content/caseStudies.ts. */
 export const engagementTypes: { title: string; text: string; scope: string[]; icon: LucideIcon }[] = [
   {
     icon: Rocket,

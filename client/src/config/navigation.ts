@@ -37,6 +37,7 @@ import {
   Presentation,
   RefreshCw,
   Route,
+  Search,
   ShieldCheck,
   ShoppingBag,
   ShoppingCart,
@@ -145,6 +146,7 @@ export const resourceItems: NavItem[] = [
   { label: 'Case Studies', to: '/case-studies', description: 'How projects were delivered', icon: Presentation },
   { label: 'FAQ', to: '/faq', description: 'Answers to common questions', icon: LifeBuoy },
   { label: 'Newsletter', to: '/newsletter', description: 'Monthly ERP updates by email', icon: Mail },
+  { label: 'Search', to: '/search', description: 'Find products, services and articles', icon: Search },
 ]
 
 export const companyItems: NavItem[] = [
@@ -214,7 +216,20 @@ export const mainNav: NavMenu[] = [
   },
 ]
 
-/** Pages that exist but are not in the mega menus (core, legal, auth). */
+/**
+ * Index of the main menu the current page belongs to (for the header's "you are here" marker), or -1.
+ * A page matches a menu when it is one of the menu's pages, a sub-page of one, or under the menu's landing page.
+ * The first match wins, so /products/compare belongs to Products rather than Solutions.
+ */
+export function activeMenuIndex(pathname: string): number {
+  const path = pathname.replace(/\/+$/, '') || '/'
+  const under = (to: string) => path === to || path.startsWith(`${to}/`)
+  return mainNav.findIndex(
+    (menu) => (menu.to !== undefined && under(menu.to)) || menu.groups.some((g) => g.items.some((item) => under(item.to))),
+  )
+}
+
+/** Pages that exist but are not in the mega menus (overviews, lead forms, legal, search). */
 export const otherPages: NavItem[] = [
   { label: 'All Products', to: '/products', description: 'Every ERPVALLEY module and how they connect.', icon: Layers },
   { label: 'All Industries', to: '/industries', description: 'ERP solutions configured for your industry.', icon: Building2 },
@@ -224,8 +239,6 @@ export const otherPages: NavItem[] = [
   { label: 'Privacy Policy', to: '/privacy', description: 'How ERPVALLEY collects, uses and protects personal data.', icon: ShieldCheck },
   { label: 'Terms of Service', to: '/terms', description: 'Terms that govern use of the ERPVALLEY website and services.', icon: FileText },
   { label: 'Cookie Policy', to: '/cookies', description: 'Which cookies we use and how to control them.', icon: FileText },
-  { label: 'Log in', to: '/login', description: 'Access your ERPVALLEY customer account.', icon: UserCog },
-  { label: 'Create account', to: '/register', description: 'Register for an ERPVALLEY customer account.', icon: UserCog },
   { label: 'Search', to: '/search', description: 'Search products, services and articles.', icon: FileSearch },
   { label: 'Developer Profiles', to: '/developers', description: 'Profiles of developers available for hire.', icon: Wrench },
 ]

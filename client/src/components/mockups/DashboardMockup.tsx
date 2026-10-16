@@ -58,7 +58,7 @@ const orders = [
 ]
 
 const statusTone: Record<string, string> = {
-  Shipped: 'bg-emerald-500/12 text-emerald-600 dark:text-emerald-400',
+  Shipped: 'bg-emerald-500/12 text-emerald-700 dark:text-emerald-400',
   Invoiced: 'bg-primary-soft text-link',
   Picking: 'bg-amber-500/14 text-amber-700 dark:text-amber-400',
 }
@@ -136,9 +136,9 @@ export function DashboardMockup({ className }: { className?: string }) {
 
       <div className="flex">
         {/* Sidebar */}
-        <aside className="hidden w-44 shrink-0 border-r border-line bg-bg-alt/60 p-3 md:block">
+        <div className="hidden w-44 shrink-0 border-r border-line bg-bg-alt/60 p-3 md:block">
           <p className="px-2 pb-2 font-display text-sm font-extrabold">
-            ERP<span className="text-logo-blue">VALLEY</span>
+            ERP<span className="text-link">VALLEY</span>
           </p>
           <ul className="space-y-0.5">
             {nav.map((n) => (
@@ -154,7 +154,7 @@ export function DashboardMockup({ className }: { className?: string }) {
               </li>
             ))}
           </ul>
-        </aside>
+        </div>
 
         <div className="min-w-0 flex-1 p-3 sm:p-4">
           {/* Top bar */}
@@ -189,7 +189,7 @@ export function DashboardMockup({ className }: { className?: string }) {
                 <p
                   className={cn(
                     'mt-1 inline-flex items-center gap-0.5 text-[10px] font-semibold',
-                    k.up ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400',
+                    k.up ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400',
                   )}
                 >
                   {k.up ? <TrendingUp className="size-3" aria-hidden /> : <TrendingDown className="size-3" aria-hidden />}

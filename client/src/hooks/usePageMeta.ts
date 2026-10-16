@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { siteConfig } from '@/config/site'
+import { trackPageView } from '@/services/analytics'
 
 const SITE = 'ERPVALLEY'
 
@@ -16,8 +18,11 @@ function upsertMeta(attr: 'name' | 'property', key: string, content: string) {
 /**
  * Sets the title, description, canonical URL and basic Open Graph tags for the current page.
  * Canonical URLs always point at the public domain (siteConfig.url), never localhost.
+ * Also sends the GTM page_view for the page (every page calls this hook, after its title is known).
  */
 export function usePageMeta(title: string, description?: string) {
+  const { pathname, search } = useLocation()
+  const page = pathname + search
   useEffect(() => {
     const fullTitle = title.includes(SITE) ? title : `${title} | ${SITE}`
     document.title = fullTitle
@@ -38,5 +43,6 @@ export function usePageMeta(title: string, description?: string) {
       upsertMeta('name', 'description', description)
       upsertMeta('property', 'og:description', description)
     }
-  }, [title, description])
+    trackPageView(page, fullTitle)
+  }, [title, description, page])
 }

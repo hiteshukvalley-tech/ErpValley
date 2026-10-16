@@ -15,9 +15,10 @@ export function Footer() {
   const socialLinks = Object.entries(social).filter(([, url]) => url)
 
   // The footer form hands off to the newsletter page, which handles consent and submission.
+  // The address travels in router state, not the URL, so it never reaches analytics or server logs.
   const onSubscribe = (e: FormEvent) => {
     e.preventDefault()
-    navigate(`/newsletter${email ? `?email=${encodeURIComponent(email)}` : ''}`)
+    navigate('/newsletter', { state: email ? { email } : undefined })
   }
 
   return (
@@ -45,7 +46,7 @@ export function Footer() {
                 <button
                   type="submit"
                   aria-label="Continue to newsletter signup"
-                  className="inline-flex h-11 shrink-0 items-center justify-center rounded-lg bg-electric px-4 text-white transition-colors hover:bg-[#2a72ff]"
+                  className="inline-flex h-11 shrink-0 items-center justify-center rounded-lg bg-electric px-4 text-white transition-[background-color,box-shadow,scale] hover:bg-[#2a72ff] hover:shadow-[0_8px_22px_-8px_rgb(11_92_255/0.75)] active:scale-95"
                 >
                   <ArrowRight className="size-4" aria-hidden />
                 </button>

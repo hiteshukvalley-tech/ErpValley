@@ -1,5 +1,4 @@
 import { pageRegistry } from '@/config/navigation'
-import { fetchApi } from './api'
 
 export type SearchGroup = 'Products' | 'Industries' | 'Services' | 'Articles' | 'Pages'
 
@@ -38,26 +37,16 @@ export function matchDocs(docs: SearchDoc[], query: string, limit = 50): SearchH
     .map(({ doc: { text: _text, ...hit } }) => hit)
 }
 
-/** Site pages from the navigation registry. Content pages (products, industries, …) are searched separately. */
+/** Site pages from the navigation registry. Content pages (products, industries, …) are indexed separately. */
 export const pageDocs: SearchDoc[] = [...pageRegistry]
   .filter(([to]) => !/^\/(products|industries|services|blog|case-studies)\//.test(to))
   .map(([to, item]) => ({ to, title: item.label, summary: item.description, group: 'Pages', text: joinText(item.description) }))
 
-/**
- * Searches the site: content through the API (`/api/search`), site pages locally.
- * Falls back to searching the bundled content when the API cannot be reached.
- */
+/** Searches the whole site in the browser. The index (all content) is loaded on the first search. */
 export async function searchSite(query: string): Promise<SearchHit[]> {
   if (!query.trim()) return []
-  try {
-    const body = await fetchApi<{ data?: SearchHit[] }>(`/search?q=${encodeURIComponent(query)}`)
-    if (!Array.isArray(body.data)) throw new Error('Unexpected response from /search')
-    const content = body.data.map(({ to, title, summary, group }) => ({ to, title, summary, group }))
-    return [...content, ...matchDocs(pageDocs, query)]
-  } catch {
-    const { search } = await import('./searchIndex')
-    return search(query)
-  }
+  const { search } = await import('./searchIndex')
+  return search(query)
 }
 
 /** Route loader for /search?q= */

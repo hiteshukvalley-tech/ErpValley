@@ -17,7 +17,7 @@ function SoftwareArt() {
           key={a.to}
           className={cn(
             'flex aspect-square flex-col items-center justify-center gap-1.5 rounded-xl text-white shadow-sm',
-            ['bg-electric', 'bg-logo-blue', 'bg-[#1d4ed8]'][i % 3],
+            ['bg-electric', 'bg-[#1565e8]', 'bg-[#1d4ed8]'][i % 3],
           )}
         >
           <a.icon className="size-5" />
@@ -83,7 +83,7 @@ export function WhatWeOffer() {
           return (
             <li key={o.id}>
               <Reveal delay={i * 90} className="h-full">
-                <article className="group flex h-full flex-col overflow-hidden rounded-card border border-line bg-surface shadow-card transition duration-200 hover:-translate-y-1 hover:shadow-pop">
+                <article className="group flex h-full flex-col overflow-hidden rounded-card border border-line bg-surface shadow-card card-hover">
                   <div className="border-b border-line bg-bg-alt p-6" aria-hidden>
                     <div className="mx-auto max-w-[260px]">
                       <Art />
